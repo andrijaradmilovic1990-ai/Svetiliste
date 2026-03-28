@@ -21,7 +21,7 @@
         .music-player * { pointer-events: none; }
         .vinyl-spin { animation: spin 3s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        #player-status { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; }
+        #player-status { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; font-weight: bold; }
         #storyModal { background-color: #0a0a0a; z-index: 200; }
     </style>
 </head>
@@ -35,7 +35,7 @@
             <a href="#stories" class="hover:text-white transition">Priče</a>
             <a href="#about" class="hover:text-white transition">O Autoru</a>
         </div>
-        <button id="menu-btn" class="md:hidden text-white"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+        <button id="menu-btn" class="md:hidden text-white" onclick="toggleMenu()"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
     </nav>
 
     <div id="mobile-menu" class="fixed inset-0 z-[90] bg-black flex flex-col items-center justify-center space-y-8 text-2xl uppercase tracking-[0.3em] transform -translate-y-full md:hidden">
@@ -45,8 +45,8 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element sa online linkom da bi sigurno radilo -->
-    <audio id="bg-audio" loop preload="auto" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+    <!-- Tvoj Audio Element - vraćen na tvoj fajl -->
+    <audio id="bg-audio" loop preload="auto" src="creedence.mp3"></audio>
 
     <div class="music-player" id="player-container">
         <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900">
@@ -76,7 +76,6 @@
         <h2 class="text-3xl font-bold text-white mb-12 border-l-4 border-white pl-4 typewriter-font uppercase text-left">Arhiva Zapisa</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <!-- PRIČA 1 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-[10px] text-gray-500 mb-2 uppercase tracking-widest">Ludilo / Borba / Pisac</span>
                 <h3 class="text-xl font-bold text-white mb-4 uppercase">Pljuvanje u oko suncu</h3>
@@ -84,7 +83,6 @@
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Pljuvanje u oko suncu', `Ako negde na ovom jebenom svetu postoje stepeni ludila, i što si luđi, ljudima je to očiglednije – ja sam najveći deo života skrivao svoje. Ali ono je tu. Neko mi, recimo, govori o ovom ili onom, i dok me ta osoba gnjavi svojim bajatim opštim mestima, desi se da zamislim njegovu ili njenu glavu položenu na panj giljotine, ili ih vidim na ogromnom tiganju kako se prže i gledaju me unezverenim očima. U takvim situacijama najverovatnije ću pokušati da umaknem, ali ne mogu da izbegnem takve vizije kad mi se ljudi obrate.\n\nIli, kad sam bolje raspoložen, mogu da ih vidim na biciklu kako se brzo udaljavaju od mene. Jednostavno imam problem sa ljudima. Životinje, njih volim. One ne lažu i retko pokušavaju da te napadnu. Ponekad umeju da budu podmukle, ali to se toleriše. Zašto? Najveći deo mladosti proveo sam stešnjen u malim sobama, gledajući u zidove, pocepane zavese, ručke na komodama. Bio sam svestan žena i želeo sam ih, ali nisam hteo da skačem kroz sve obruče da bih došao do njih. Bio sam svestan novca, ali opet, kao i sa ženama, nisam hteo da uradim ono što je potrebno da bih došao do njega. Hteo sam samo onoliko koliko mi treba za sobu, piće i još po nešto.\n\nPio sam sam, obično u krevetu, spuštenih roletni. Ponekad sam odlazio u obližnje lokale da overim koga ima, ali to je uvek bilo isto – ništa posebno, a često i mnogo manje od toga. U svim gradovima posećivao sam biblioteke. Otvarao sam knjigu za knjigom. Retko je bilo onih koje bi mi govorile nešto. Uglavnom su bile prašina u mojim ustima, pesak u mojim mislima. Nijedna nije bila povezana sa mnom ili sa mojim osećanjem: gde sam bio – nigde, šta sam imao – ništa, i šta sam želeo – ništa. Knjige iz proteklih stoleća samo su još više komplikovale misteriju toga što imaš ime, telo, što hodaš naokolo, govoriš, radiš nešto. Niko se nije bavio mojim specifičnim ludilom.\n\nU nekim lokalima postajao sam nasilan. Dolazilo je do tuča u kojima sam uglavnom dobijao batine. Ali ja se nisam tukao ni sa kim posebno, nisam bio gnevan – samo nisam shvatao ljude, to što oni jesu, to što rade, kako izgledaju. Bio sam više puta u zatvoru, izbacivan iz soba u kojima sam živeo, spavao sam u parkovima, na grobljima. Bio sam izgubljen, ali nisam bio nesrećan. Nazovimo to kako hoćete, nisam bio zao. Jednostavno nisam mogao da shvatim ništa od onog što je bilo tu. Moje nasilje je bilo usmereno protiv očigledne klopke. Vrištao sam, a oni nisu razumeli. Čak i u najgorim tučama pogledao bih svog protivnika i mislio: 'Zašto je besan? Hoće da me ubije.' Onda bih morao pesnicama da se branim od zveri koja nasrće na mene.\n\nLjudi nemaju smla za humor, tako su dosadno ozbiljni u odnosu na same sebe. Negde usput, postao sam naivan – a zaista ne znam odakle mi to – i počeo sam da mislim kako bi možda trebalo da budem pisac. Možda bih mogao da napišem reči koje nisam pročitao, a koje sam doživeo; možda bih tako mogao da sklonim tu zver sa grbače. I tako sam počeo. Protekle su godine, a da nisam imao mnogo sreće u svemu tome. Nove sobe, novi gradovi. Padao sam sve niže i niže. Jednom sam se smrzavao na plaži u baraci sa jednim evrom dnevno. Bez vode, struje, grejanja. Sedeo sam i smrzavao se. Jednog jutra poželeo sam da patrljkom olovke pišem priče po marginama starih novina na podu. Na kraju, u dvadeset petoj, pojavila se prva ponuda, brošura priča. Razmišljao sam o tome, jako dugo i mučno. Više nisam pisao zato što nisam imao, već zato što sam želeo.\n\nI dalje pišem. U prva tri meseca ove godine napisao sam deset priča. I sada osećam kako se ludilo valja kroz mene, ali još nisam napisao reč onako kako to želim. Zver mi je i dalje na leđima. Umreću sa tim skotom na grbači, ali borio sam se s njim. I ako negde postoji neko ko se oseća dovoljno ludim da poželi da bude pisac, reći ću: samo napred, pljuni u oko suncu, udri po tim tipkama! To je najbolje moguće ludilo. Decenijama je potrebna pomoć, ljudski rod vapi za svetlošću, hazardom i smehom. Daj im to. Ima dovoljno reči za sve nas.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 2 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Mesec / Život</span>
                 <h3 class="text-xl font-bold text-white mb-4 uppercase">Mesec</h3>
@@ -92,7 +90,6 @@
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Mesec', `Sanjao sam Mesec. Gledao sam ga sa krova, uz prve note drvene gitare; bio mi je bliži nego ikada. Čak ni one noći kad je zauzeo polovinu horizonta, nije bio toliki. Probudio sam se, otišao na trčanje, pa na vežbanje, pa pod tuš. U tome mi je prošao ceo dan. \n\nIšao sam od zubara, premoren. Divna stvar koja je razrušila moju svakodnevicu je čovek koji ti gurne metalne bušilice u usta i onda te bode. Kao da već nemamo dovoljno bola i rutine.\n\nTačno između dva voda postrojenih zgrada stajao je on, okrugao i u svojoj punoj snazi. Nije bio veliki kao u mom snu, ali je imao lice. Sive oči s naboranim obrvama, blago podignutim nagore, čučale su nad skupljenim usnama. Ovo je bila drugačija vrsta draži.\n\nU Mesecu ima nečeg čovečijeg. Možda ona najistaknutija crta svih nas – bol. Navedi mi jednu treznu osobu koju ništa ne boli; čak i ovi što piju, piju da bi otupeli. Toliko ljudi priča s njim, ispovedaju mu se, plaču mu, kukaju. Da li znaš ijednu osobu koja je pitala Mesec zašto je tužan?\n\nOdlučih tog trena da sam i ja tužan. Niko na ovom svetu ne bi trebalo da bude tužan sam. Odbijam danas da budem srećan. Umesto toga ću da plutam u seti, nostalgiji, mraku koji čuči između sjaja zvezda i Meseca. Tako ću mu se približiti. Jer niko ne zaslužuje da bude sam.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 3 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kosmos / Putovanje</span>
                 <h3 class="text-xl font-bold text-white mb-4">Priča lutajućeg dečaka</h3>
@@ -100,7 +97,6 @@
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Priča lutajućeg dečaka', `Jedne sasvim uobičajene subote sam se probudio malo pre jedan popodne, kao i svakog dana. Skuvao kafu, zapalio cigaretu, proverio vesti. Sve je teklo normalno, dok me nije obuzeo taj nagon. Nagon da odem, da pobegnem iz ovog života.\n\nKrenuo sam iz sobe i dugo leteo. Odleteo sam do trinaestog oblaka, a kada sam zakoračio na planetarni nivo, osetio sam kako mi svi molekuli govore da se vratim. Govorili su mi da mi se neće svideti istina koju ću pronaći, da više neću imati isti pogled u očima. Ali kad napraviš taj jedan korak, moraš nastaviti. \n\nHodao sam dugo kroz pustaru planetarnog nivoa. Sreo sam jednog cvrčka, popričao s njim. I on je nešto tražio. Postoji legenda o začaranom pesniku koji luta zemljom, začaran ljubavlju jedne žene. Možda ću jednog dana sresti pravog cvrčka koji zna ko je on.\n\nStigao sam do kraja univerzuma. Do ivice vremena gde stoji tabla: „Dobrodošao na kraj.“ Pružio sam nogu ka ambisu, ali sam se vratio. Shvatio sam da sam prevario sudbinu previše se zagledajući u ono što nije smelo biti viđeno.\n\nVratio sam se u sobu. Na stolu je cigareta i dalje gorela. Kafa je bila popijena. Ništa se nije desilo u stvarnosti, osim što sam ja video ceo jedan život. Ljudi mi neće verovati. Možda će mi verovati poneki cvrčak, leptir ili bubamara.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 4 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kratka priča / Muzika</span>
                 <h3 class="text-xl font-bold text-white mb-4">Have You Ever Seen the Rain</h3>
