@@ -43,8 +43,8 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element sa direktnom putanjom -->
-    <audio id="bg-audio" loop src="./creedence.mp3"></audio>
+    <!-- Audio Element - Samo jedan izvor, bez './' -->
+    <audio id="bg-audio" loop preload="auto" src="creedence.mp3"></audio>
 
     <div class="music-player" onclick="toggleMuzika()">
         <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900">
@@ -74,7 +74,7 @@
         <h2 class="text-3xl font-bold text-white mb-12 border-l-4 border-white pl-4 typewriter-font uppercase text-left">Arhiva Zapisa</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <!-- PRIČA 1: Pljuvanje u oko suncu -->
+            <!-- PRIČA 1 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-[10px] text-gray-500 mb-2 uppercase tracking-widest">Ludilo / Borba / Pisac</span>
                 <h3 class="text-xl font-bold text-white mb-4 uppercase">Pljuvanje u oko suncu</h3>
@@ -92,10 +92,10 @@ Ljudi nemaju smla za humor, tako su dosadno ozbiljni u odnosu na same sebe. Negd
 I dalje pišem. U prva tri meseca ove godine napisao sam deset priča. I sada osećam kako se ludilo valja kroz mene, ali još nisam napisao reč onako kako to želim. Zver mi je i dalje na leđima. Umreću sa tim skotom na grbači, ali borio sam se s njim. I ako negde postoji neko ko se oseća dovoljno ludim da poželi da bude pisac, reći ću: samo napred, pljuni u oko suncu, udri po tim tipkama! To je najbolje moguće ludilo. Decenijama je potrebna pomoć, ljudski rod vapi za svetlošću, hazardom i smehom. Daj im to. Ima dovoljno reči za sve nas.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 2: Mesec -->
+            <!-- PRIČA 2 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Mesec / Život</span>
-                <h3 class="text-xl font-bold text-white mb-4">Mesec</h3>
+                <h3 class="text-xl font-bold text-white mb-4 uppercase">Mesec</h3>
                 <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow italic">"Sanjao sam Mesec. Gledao sam ga sa krova..."</p>
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Mesec', `Sanjao sam Mesec. Gledao sam ga sa krova, uz prve note drvene gitare; bio mi je bliži nego ikada. Čak ni one noći kad je zauzeo polovinu horizonta, nije bio toliki. Probudio sam se, otišao na trčanje, pa na vežbanje, pa pod tuš. U tome mi je prošao ceo dan. 
 
@@ -108,7 +108,7 @@ U Mesecu ima nečeg čovečijeg. Možda ona najistaknutija crta svih nas – bol
 Odlučih tog trena da sam i ja tužan. Niko na ovom svetu ne bi trebalo da bude tužan sam. Odbijam danas da budem srećan. Umesto toga ću da plutam u seti, nostalgiji, mraku koji čuči između sjaja zvezda i Meseca. Tako ću mu se približiti. Jer niko ne zaslužuje da bude sam.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 3: Priča lutajućeg dečaka -->
+            <!-- PRIČA 3 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kosmos / Putovanje</span>
                 <h3 class="text-xl font-bold text-white mb-4">Priča lutajućeg dečaka</h3>
@@ -124,7 +124,7 @@ Stigao sam do kraja univerzuma. Do ivice vremena gde stoji tabla: „Dobrodošao
 Vratio sam se u sobu. Na stolu je cigareta i dalje gorela. Kafa je bila popijena. Ništa se nije desilo u stvarnosti, osim što sam ja video ceo jedan život. Ljudi mi neće verovati. Možda će mi verovati poneki cvrčak, leptir ili bubamara.`)">Pročitaj više</button>
             </div>
 
-            <!-- PRIČA 4: Have You Ever Seen the Rain -->
+            <!-- PRIČA 4 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full text-left">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kratka priča / Muzika</span>
                 <h3 class="text-xl font-bold text-white mb-4">Have You Ever Seen the Rain</h3>
@@ -189,7 +189,7 @@ Ali sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne.
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
                 
-                // Prisilno učitavanje izvora kako bi se izbjegle keširane greške
+                // Prisilno učitavanje
                 audio.load();
                 
                 let playPromise = audio.play();
@@ -202,10 +202,19 @@ Ali sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne.
                         statusText.innerText = "Slušaš Creedence";
                         isPlaying = true;
                     }).catch(err => {
-                        statusText.innerText = "Greška sa fajlom";
+                        // Ako se javi greška, pokušavamo jednom sa čistim parametrom protiv keša
                         console.error("Greška pri puštanju muzike:", err);
-                        // Ako se javi greška, pokušavamo ponovo sa čistom putanjom
-                        audio.src = "creedence.mp3?v=" + new Date().getTime();
+                        audio.src = "creedence.mp3?v=" + Date.now();
+                        audio.play().then(() => {
+                            playSvg.classList.add('hidden');
+                            pauseSvg.classList.remove('hidden');
+                            vinylIcon.classList.add('vinyl-spin');
+                            statusText.innerText = "Slušaš Creedence";
+                            isPlaying = true;
+                        }).catch(e => {
+                            statusText.innerText = "Greška sa fajlom";
+                            isPlaying = false;
+                        });
                     });
                 }
             } else {
