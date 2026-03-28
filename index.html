@@ -25,6 +25,7 @@
 </head>
 <body onload="window.scrollTo(0, 0);">
 
+    <!-- Navigacija -->
     <nav class="fixed w-full z-[100] bg-black/90 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center text-left">
         <a href="#home" class="text-xl font-bold tracking-tighter typewriter-font text-white uppercase">SVETILIŠTE</a>
         <div class="space-x-8 text-sm uppercase tracking-widest hidden md:flex">
@@ -42,7 +43,8 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <audio id="bg-audio" loop src="creedence.mp3"></audio>
+    <!-- Audio Element sa direktnom putanjom -->
+    <audio id="bg-audio" loop src="./creedence.mp3"></audio>
 
     <div class="music-player" onclick="toggleMuzika()">
         <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900">
@@ -58,6 +60,7 @@
         </div>
     </div>
 
+    <!-- Hero Sekcija -->
     <section id="home" class="h-screen flex items-center justify-center px-6 text-center">
         <div class="max-w-3xl">
             <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 typewriter-font uppercase">Tišina koja vrišti.</h1>
@@ -66,6 +69,7 @@
         </div>
     </section>
 
+    <!-- Arhiva Priča -->
     <section id="stories" class="py-24 px-6 max-w-7xl mx-auto">
         <h2 class="text-3xl font-bold text-white mb-12 border-l-4 border-white pl-4 typewriter-font uppercase text-left">Arhiva Zapisa</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -147,6 +151,7 @@ Ali sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne.
         </div>
     </section>
 
+    <!-- O Autoru -->
     <section id="about" class="py-24 bg-[#050505] text-left">
         <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 text-gray-400">
             <div class="w-48 h-48 bg-gray-900 rounded-full border-4 border-[#121212] flex items-center justify-center text-4xl typewriter-font text-white/10 italic uppercase">NIKO</div>
@@ -160,14 +165,16 @@ Ali sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne.
         </div>
     </section>
 
+    <!-- Modal -->
     <div id="storyModal" class="fixed inset-0 hidden p-6 overflow-y-auto w-full h-full text-left">
         <div class="max-w-3xl mx-auto py-12 text-gray-300">
             <button onclick="closeStory()" class="text-gray-500 hover:text-white mb-8 uppercase tracking-widest text-xs">← Nazad na arhivu</button>
-            <h2 id="modalTitle" class="text-4xl font-bold text-white mb-8 typewriter-font"></h2>
+            <h2 id="modalTitle" class="text-4xl font-bold text-white mb-8 typewriter-font uppercase"></h2>
             <div id="modalContent" class="text-lg leading-relaxed whitespace-pre-line border-l border-white/10 pl-6 italic"></div>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-[10px] tracking-[0.3em] uppercase">&copy; 2026 SVETILIŠTE | Red iznad haosa.</footer>
 
     <script>
@@ -181,16 +188,26 @@ Ali sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne.
         function toggleMuzika() {
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
-                audio.play().then(() => {
-                    playSvg.classList.add('hidden');
-                    pauseSvg.classList.remove('hidden');
-                    vinylIcon.classList.add('vinyl-spin');
-                    statusText.innerText = "Slušaš Creedence";
-                    isPlaying = true;
-                }).catch(err => {
-                    statusText.innerText = "Greška sa fajlom";
-                    console.error(err);
-                });
+                
+                // Prisilno učitavanje izvora kako bi se izbjegle keširane greške
+                audio.load();
+                
+                let playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playSvg.classList.add('hidden');
+                        pauseSvg.classList.remove('hidden');
+                        vinylIcon.classList.add('vinyl-spin');
+                        statusText.innerText = "Slušaš Creedence";
+                        isPlaying = true;
+                    }).catch(err => {
+                        statusText.innerText = "Greška sa fajlom";
+                        console.error("Greška pri puštanju muzike:", err);
+                        // Ako se javi greška, pokušavamo ponovo sa čistom putanjom
+                        audio.src = "creedence.mp3?v=" + new Date().getTime();
+                    });
+                }
             } else {
                 audio.pause();
                 playSvg.classList.remove('hidden');
