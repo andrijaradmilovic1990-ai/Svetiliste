@@ -16,7 +16,9 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         .whitespace-pre-line { white-space: pre-line; }
         #mobile-menu { transition: transform 0.3s ease-in-out; }
-        .music-player { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); cursor: pointer; }
+        .music-player { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.75rem 1.25rem; border-radius: 50px; display: flex; align-items: center; gap: 0.75rem; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.8); cursor: pointer; transition: all 0.3s ease; user-select: none; }
+        .music-player:hover { transform: scale(1.02); background: rgba(30, 30, 30, 0.95); border-color: rgba(255, 255, 255, 0.3); }
+        .music-player * { pointer-events: none; }
         .vinyl-spin { animation: spin 3s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         #player-status { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; }
@@ -43,10 +45,10 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element -->
-    <audio id="bg-audio" loop preload="auto" src="creedence.mp3"></audio>
+    <!-- Audio Element sa online linkom da bi sigurno radilo -->
+    <audio id="bg-audio" loop preload="auto" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
 
-    <div class="music-player" onclick="toggleMuzika()">
+    <div class="music-player" id="player-container">
         <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900">
             <div class="w-2 h-2 bg-white rounded-full"></div>
         </div>
@@ -136,45 +138,42 @@
     <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-[10px] tracking-[0.3em] uppercase">&copy; 2026 SVETILIŠTE | Red iznad haosa.</footer>
 
     <script>
-        let isPlaying = false;
-        const audio = document.getElementById('bg-audio');
-        const vinylIcon = document.getElementById('vinyl-icon');
-        const playSvg = document.getElementById('play-svg');
-        const pauseSvg = document.getElementById('pause-svg');
-        const statusText = document.getElementById('player-status');
+        document.addEventListener('DOMContentLoaded', () => {
+            let isPlaying = false;
+            const playerContainer = document.getElementById('player-container');
+            const audio = document.getElementById('bg-audio');
+            const vinylIcon = document.getElementById('vinyl-icon');
+            const playSvg = document.getElementById('play-svg');
+            const pauseSvg = document.getElementById('pause-svg');
+            const statusText = document.getElementById('player-status');
 
-        function toggleMuzika() {
-            if (!isPlaying) {
-                statusText.innerText = "Učitavam...";
-                
-                let playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
+            playerContainer.addEventListener('click', async () => {
+                if (!isPlaying) {
+                    statusText.innerText = "Učitavam...";
+                    try {
+                        await audio.play();
                         playSvg.classList.add('hidden');
                         pauseSvg.classList.remove('hidden');
                         vinylIcon.classList.add('vinyl-spin');
                         statusText.innerText = "Slušaš Creedence";
                         isPlaying = true;
-                    }).catch(err => {
-                        console.error("Greška:", err);
-                        // Windows "file://" protokol ne dozvoljava parametre.
-                        // Jasna poruka ako fajla nema.
-                        statusText.innerText = "Fali mp3 u folderu!";
+                    } catch (err) {
+                        console.error("Greška s audiom:", err);
+                        statusText.innerText = "Nedostaje mp3 datoteka!";
                         playSvg.classList.remove('hidden');
                         pauseSvg.classList.add('hidden');
                         isPlaying = false;
-                    });
+                    }
+                } else {
+                    audio.pause();
+                    playSvg.classList.remove('hidden');
+                    pauseSvg.classList.add('hidden');
+                    vinylIcon.classList.remove('vinyl-spin');
+                    statusText.innerText = "Pauzirano";
+                    isPlaying = false;
                 }
-            } else {
-                audio.pause();
-                playSvg.classList.remove('hidden');
-                pauseSvg.classList.add('hidden');
-                vinylIcon.classList.remove('vinyl-spin');
-                statusText.innerText = "Pauzirano";
-                isPlaying = false;
-            }
-        }
+            });
+        });
 
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -189,4 +188,10 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function close
+        function closeStory() {
+            document.getElementById('storyModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
