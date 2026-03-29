@@ -105,7 +105,7 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element - Očišćeno i ostavljen samo jedan tačan source -->
+    <!-- Audio Element -->
     <audio id="bg-audio" loop preload="auto">
         <source src="creedence.mp3" type="audio/mpeg">
     </audio>
@@ -144,7 +144,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Kartica 1 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full">
-                <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kratka priča / Trenutak</span>
+                <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kratka priča / Muzika</span>
                 <h3 class="text-xl font-bold text-white mb-4">Have You Ever Seen the Rain</h3>
                 <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Sedim sam, kafana skoro prazna. Sunce je peklo kao da nikad neće sići...</p>
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Have You Ever Seen the Rain', 'Sedim sam, kafana skoro prazna, konobar zeva iza šanka i gleda u telefon. Do pre pet minuta sunce je peklo kao da nikad neće sići, a sad — kiša lomi trotoare, bije stakla i pravi muziku jaču od svake koju mogu da puste.\n\n&quot;Someone told me long ago...&quot;\n\n...Creedence.\n\nTaman kad pomisliš da si jedini lud, svet ti namigne.\n\nIspred mene: šolja kafe. Crna kao namera da ćutim. I hladna već, al’ ne smeta. U njoj se ogleda plafon kafića, onaj što su ga poslednji put okrečili kad je Đinđić bio živ. U kafi se, ako gledaš dovoljno dugo, možeš izgubiti. Ili pronaći. Nema razlike kad si sam. Na stolu papiri preškrabani sa nedovršenim krajevima. Kao i ja.\n\nGledam kroz prozor. Kiša pada pod uglom koji deluje lično. Ljudi trče, sakrivaju se, kao da se kiša ne dešava svima isto. Jedna devojka nosi kišobran, ali drži ga spuštenog. Pusti ga da je kvasi. Zastane ispred prozora.\n\nI pesma ide dalje: &quot;I wanna know... have you ever seen the rain... comin\' down on a sunny day?&quot;\n\nJesam, druže. Video sam je i kad je gorelo sve. I kad nije bilo ničega.\n\nAli sad je tu. Pada. I nekako mi je lakše. Jer kiša ne traži razlog da padne. Samo padne.')">Pročitaj više</button>
@@ -163,7 +163,6 @@
                 <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Sanjao sam Mesec. Gledao sam ga sa krova, uz prve note drvene gitare...</p>
                 <button class="text-white text-xs font-bold uppercase tracking-widest hover:underline text-left" onclick="openStory('Mesec', 'Sanjao sam Mesec. Gledao sam ga sa krova, uz prve note drvene gitare; bio mi je bliži nego ikada. Čak ni one noći kad je zauzeo polovinu horizonta, nije bio toliki. Probudio sam se, otišao na trčanje, pa na vežbanje, pa pod tuš. U tome mi je prošao ceo dan. \n\nIšao sam od zubara, premoren. Divna stvar koja je razrušila moju svakodnevicu je čovek koji ti gurne metalne bušilice u usta i onda te bode. Kao da već nemamo dovoljno bola u toj istoj rutini, pa mora neko da nam gura bušilice, igle i kojekakvu metalurgiju u usta da nam još malo upotpuni doživljaj. \n\nTačno između dva voda postrojenih zgrada stajao je on, okrugao i u svojoj punoj snazi. Nije bio veliki kao u mom snu, ali je imao lice. Sive oči s naboranim obrvama, blago podignutim nagore, čučale su nad skupljenim usnama. Ovo je bila drugačija vrsta draži.\n\nU Mesecu ima nečeg čovečijeg. Možda ona najistaknutija crta svih nas – bol. Navedi mi jednu treznu osobu koju ništa ne boli; čak i ovi što piju, piju da bi otupeli. Toliko ljudi priča s njim, ispovedaju mu se, plaču mu, kukaju. Da li znaš ijednu osobu koja je pitala Mesec zašto je tužan?\n\nOdlučih tog trena da sam i ja tužan. Niko na ovom svetu ne bi trebalo da bude tužan sam. Odbijam danas da budem srećan. Umesto toga ću da plutam u seti, nostalgiji, mraku koji čuči između sjaja zvezda i Meseca. Tako ću mu se približiti. Jer niko ne zaslužuje da bude sam.')">Pročitaj više</button>
             </div>
-            
             <!-- Kartica 4 -->
             <div class="story-card p-8 rounded-lg flex flex-col h-full">
                 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Ludilo / Borba / Pisac</span>
@@ -177,14 +176,18 @@
     <!-- O Autoru -->
     <section id="about" class="py-24 bg-[#050505]">
         <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 text-gray-400">
-            <div class="w-48 h-48 bg-gray-900 rounded-full border-4 border-[#121212] flex items-center justify-center text-5xl text-white/20 typewriter-font">?</div>
+            <div class="w-48 h-48 bg-gray-900 rounded-full border-4 border-[#121212] flex items-center justify-center text-5xl text-white/20 typewriter-font flex-shrink-0">?</div>
             <div>
                 <h2 class="text-3xl font-bold text-white mb-6 typewriter-font">Gospodin Niko</h2>
-                <div class="space-y-4 text-sm md:text-base">
-                    <p>Zdravo, moje ime nije bitno, ali zvaćemo se Gospodin Niko. Imam 35 godina. Bolje je da se o meni zna sasvim malo – tako je lakše i meni i svetu. Introvertan sam, ponekad i previše, ali se trudim da makar u hodu to prikrijem.</p>
-                    <p>Ja samo duboko cenim tišinu u svetu koji ne prestaje da brblja ni o čemu. Moje utočište su Hemingvej i Dikens, mada se i Hese tu bori muški. Volim stari dobri rok i one retke emotivce kojih je ostalo premalo da bi se čuli od opšte buke.</p>
-                    <p>Generalno, ne volim osobe i stvari bez srca. Verujem u parne brojeve, uz neparne izuzetke kao što su 7, 13 i 21. Oni imaju neku svoju tajnu.</p>
-                    <p class="italic text-white/60 pt-2">Kako sam? Dobro sam. To je sasvim dovoljno.</p>
+                <div class="space-y-4 text-sm md:text-base leading-relaxed text-gray-400">
+                    <p>U ovom trenutku na svetu ima preko osam milijardi ljudi. Neki trče uplašeni. Neki dolaze kući. Neki lažu da bi preživeli dan. Drugi se tek sada suočavaju sa istinom. Neki su zli ljudi, koji vode rat sa dobrima. A neki su dobri, bore se sa zlom. Osam milijardi ljudi u svetu. Osam milijardi duša. A ponekad, sve što vam treba je jedna.</p>
+                    <p>Moje je ime gospodin Niko. Ja sam pisac ili možda filozof, pevač ili možda zapravo ništa od toga trenutno, ali mogu reći da sam bio sve te stvari. Imam 35 godina. Bolje je da veoma malo znaš o meni. Biće meni nekako lakše. Ima nekoliko ljudi u mojoj glavi. Odrastao sam normalno. Iz jednog malog grada sam. Jedinac sam i pomalo previše introvertan, ali se trudim da ne budem.</p>
+                    <p>Živim na jednom mestu negde na svetu. Možda je baš kao vaš svet, možda nije ni približno takav. Ali ako pogledate pažljivo, možda vidite nekog poput mene, ili nekog poput vas. Nekog ko pokušava naći svoj put. Nekog ko se trudi da nađe svoj dom. Nekog ko pokušava naći sebe.</p>
+                    <p>Većina ljudi misli da sam nesrećan ili barem tužan. Ali ja to zaista nisam. Samo mnogo cenim tišinu u ovom svetu koji ne prestaje da priča. Ponekad znam da se raspričam, uglavnom kad držim zdravice, a to dobro znaju ljudi koji su ih, nažalost, preživeli. Normalan sam ja inače, sasvim. Valjda. Ne znam.</p>
+                    <p>Najviše volim Hemingveja i Dikensa, mada se i Hese tu bori muški. „Božićna bajka“ mi je omiljena knjiga, a pored nje još mnoštvo drugih. Volim Vini Pua i neke stare crtane kao što su Tom i Džeri. Naravno, stari dobri rok i one retke emotivce kojih je, nažalost, jako malo ostalo. Znam da volim maslačak, iako njegovu lepotu ne cene baš mnogi. Volim reč cvrčak. Volim stare tramvaje, vozove i klackanje u njima, čak i kad izgleda kao da će ispasti iz šina. Ali ne volim švajcarce i trolejbuse. Na primer, švajcarci imaju prozore koje možeš otvoriti najviše 15 stepeni, a ja više volim vetar u kosi, dok su mi trolejbusi grubi, glasno se zatvaraju vrata, ne volim to. Ne volim osobe i stvari koje nemaju srce ni dušu. Volim parne brojeve, osim neparnih izuzetaka (7, 13, 21).</p>
+                    <p>Ponekad deluje kao da ste vi jedina osoba koja se muči, bori i grči, koja je frustrirana, nezadovoljna, jedva se sastavlja. Ali taj osećaj je laž! I ako samo sačekate, strpite se, samo nađete hrabrost da se suočite sa novim danom, nešto ili neko će vas naći i biće sve u redu. Zato što svi trebamo pomoć ponekad – neko da nam pomogne da čujemo muziku u njihovom a i našem svetu, da nas podseti da neće uvek biti ovako. Taj neko je tamo negde, i taj neko će vas naći.</p>
+                    <p class="font-bold text-white/80">Budite oni koji zamišljaju želju baš u ponoć. Da li ste je zamislili?<br>Sad verujte u nju svim srcem i kada vam se ostvari, čuvajte je.<br>Da li ste je zamislili?</p>
+                    <p class="italic text-white/60 pt-4 border-t border-white/10 mt-6">A ja, kako sam? Dobro sam. I to je dovoljno.</p>
                 </div>
             </div>
         </div>
@@ -216,9 +219,7 @@
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
                 
-                // Resetujemo audio u slučaju da je zaglavljen
                 audio.load();
-                
                 let playPromise = audio.play();
                 
                 if (playPromise !== undefined) {
