@@ -105,24 +105,28 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element -->
-    <audio id="bg-audio" loop preload="auto">
-        <source src="creedence.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Audio Element - Sada radi kao playlista i automatski prebacuje -->
+    <audio id="bg-audio" preload="auto" onended="sledecaPesma(event)"></audio>
 
-    <!-- Muzički Plejer UI -->
-    <div class="music-player" onclick="toggleMuzika()">
-        <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900">
+    <!-- Muzički Plejer UI - Dodato dugme za sledeću pesmu -->
+    <div class="music-player">
+        <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900" onclick="toggleMuzika()">
             <div class="w-2 h-2 bg-white rounded-full"></div>
             <div class="absolute inset-0 border border-white/5 rounded-full"></div>
         </div>
-        <div class="flex flex-col">
-            <span class="text-[10px] font-bold text-white leading-tight uppercase tracking-tighter">Creedence</span>
+        <div class="flex flex-col" onclick="toggleMuzika()">
+            <span id="song-title" class="text-[10px] font-bold text-white leading-tight uppercase tracking-tighter">Creedence</span>
             <span id="player-status">Pritisni za ton</span>
         </div>
-        <div id="play-pause-icon" class="ml-2 text-white">
-            <svg id="play-svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
-            <svg id="pause-svg" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z"></path></svg>
+        <div class="flex items-center gap-2 ml-2 text-white">
+            <div id="play-pause-icon" class="cursor-pointer hover:text-gray-300" onclick="toggleMuzika()">
+                <svg id="play-svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
+                <svg id="pause-svg" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z"></path></svg>
+            </div>
+            <!-- Dugme Next -->
+            <div class="cursor-pointer hover:text-gray-300" onclick="sledecaPesma(event)" title="Sledeća pesma">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 5v10l7-5-7-5zM4 5v10l7-5-7-5z"></path></svg>
+            </div>
         </div>
     </div>
 
@@ -208,18 +212,28 @@
     </footer>
 
     <script>
+        // Playlist podaci - OVDE DODAJEŠ NOVE PESME
+        const playlista = [
+            { naslov: "Creedence", fajl: "creedence.mp3" },
+            { naslov: "Switchfoot - Dare You To Move (Alt. Version)", fajl: "dareyoutomove.mp3" }
+        ];
+        let trenutnaPesma = 0;
         let isPlaying = false;
+        
         const audio = document.getElementById('bg-audio');
         const vinylIcon = document.getElementById('vinyl-icon');
         const playSvg = document.getElementById('play-svg');
         const pauseSvg = document.getElementById('pause-svg');
         const statusText = document.getElementById('player-status');
+        const songTitle = document.getElementById('song-title');
+
+        // Inicijalno postavljanje prve pesme
+        audio.src = playlista[trenutnaPesma].fajl;
+        songTitle.innerText = playlista[trenutnaPesma].naslov;
 
         function toggleMuzika() {
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
-                
-                audio.load();
                 let playPromise = audio.play();
                 
                 if (playPromise !== undefined) {
@@ -227,10 +241,10 @@
                         playSvg.classList.add('hidden');
                         pauseSvg.classList.remove('hidden');
                         vinylIcon.classList.add('vinyl-spin');
-                        statusText.innerText = "Slušaš Creedence";
+                        statusText.innerText = "Slušaš";
                         isPlaying = true;
                     }).catch(error => {
-                        statusText.innerText = "Greška: Fajl nije ispravan";
+                        statusText.innerText = "Nedostaje fajl";
                         console.error("Audio error:", error);
                         isPlaying = false;
                     });
@@ -242,6 +256,19 @@
                 vinylIcon.classList.remove('vinyl-spin');
                 statusText.innerText = "Pauzirano";
                 isPlaying = false;
+            }
+        }
+
+        function sledecaPesma(e) {
+            if(e) e.stopPropagation(); // Sprečava aktiviranje pauze ako promašiš klik
+            trenutnaPesma = (trenutnaPesma + 1) % playlista.length;
+            audio.src = playlista[trenutnaPesma].fajl;
+            songTitle.innerText = playlista[trenutnaPesma].naslov;
+            
+            if (isPlaying) {
+                audio.play().catch(()=> { statusText.innerText = "Nedostaje fajl"; });
+            } else {
+                toggleMuzika(); // Ako je bilo pauzirano, prebaci na sledecu i odmah pusti
             }
         }
 
