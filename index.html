@@ -105,10 +105,10 @@
         <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
     </div>
 
-    <!-- Audio Element - Sada radi kao playlista i automatski prebacuje -->
+    <!-- Audio Element -->
     <audio id="bg-audio" preload="auto" onended="sledecaPesma(event)"></audio>
 
-    <!-- Muzički Plejer UI - Dodato dugme za sledeću pesmu -->
+    <!-- Muzički Plejer UI -->
     <div class="music-player">
         <div id="vinyl-icon" class="w-8 h-8 border-2 border-white/20 rounded-full flex items-center justify-center relative bg-zinc-900" onclick="toggleMuzika()">
             <div class="w-2 h-2 bg-white rounded-full"></div>
@@ -123,7 +123,6 @@
                 <svg id="play-svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
                 <svg id="pause-svg" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z"></path></svg>
             </div>
-            <!-- Dugme Next -->
             <div class="cursor-pointer hover:text-gray-300" onclick="sledecaPesma(event)" title="Sledeća pesma">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 5v10l7-5-7-5zM4 5v10l7-5-7-5z"></path></svg>
             </div>
@@ -212,10 +211,10 @@
     </footer>
 
     <script>
-        // Playlist podaci - OVDE DODAJEŠ NOVE PESME
+        // Playlist podaci - Cache buster v=2 da nateramo pretraživač da zaboravi greške
         const playlista = [
-            { naslov: "Creedence", fajl: "creedence.mp3" },
-            { naslov: "Switchfoot - Dare You To Move (Alt. Version)", fajl: "dareyoutomove.mp3" }
+            { naslov: "Creedence", fajl: "creedence.mp3?v=2" },
+            { naslov: "Switchfoot - Dare You To Move (Alt. Version)", fajl: "dareyoutomove.mp3?v=2" }
         ];
         let trenutnaPesma = 0;
         let isPlaying = false;
@@ -234,6 +233,7 @@
         function toggleMuzika() {
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
+                audio.load(); // Forsiramo učitavanje novog izvora
                 let playPromise = audio.play();
                 
                 if (playPromise !== undefined) {
@@ -260,15 +260,18 @@
         }
 
         function sledecaPesma(e) {
-            if(e) e.stopPropagation(); // Sprečava aktiviranje pauze ako promašiš klik
+            if(e) e.stopPropagation(); 
             trenutnaPesma = (trenutnaPesma + 1) % playlista.length;
             audio.src = playlista[trenutnaPesma].fajl;
             songTitle.innerText = playlista[trenutnaPesma].naslov;
             
+            // Pripremi novi fajl
+            audio.load();
+            
             if (isPlaying) {
                 audio.play().catch(()=> { statusText.innerText = "Nedostaje fajl"; });
             } else {
-                toggleMuzika(); // Ako je bilo pauzirano, prebaci na sledecu i odmah pusti
+                toggleMuzika(); 
             }
         }
 
