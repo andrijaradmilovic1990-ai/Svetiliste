@@ -211,10 +211,10 @@
     </footer>
 
     <script>
-        // Playlist podaci - Cache buster v=2 da nateramo pretraživač da zaboravi greške
+        // Playlist podaci - Cache buster podignut na v=3 da se reši problem keširanja na Dell-u
         const playlista = [
-            { naslov: "Creedence", fajl: "creedence.mp3?v=2" },
-            { naslov: "Switchfoot - Dare You To Move (Alt. Version)", fajl: "dareyoutomove.mp3?v=2" }
+            { naslov: "Creedence", fajl: "creedence.mp3?v=3" },
+            { naslov: "Switchfoot - Dare You To Move (Alt. Version)", fajl: "dareyoutomove.mp3?v=3" }
         ];
         let trenutnaPesma = 0;
         let isPlaying = false;
@@ -233,7 +233,7 @@
         function toggleMuzika() {
             if (!isPlaying) {
                 statusText.innerText = "Učitavam...";
-                audio.load(); // Forsiramo učitavanje novog izvora
+                audio.load(); 
                 let playPromise = audio.play();
                 
                 if (playPromise !== undefined) {
@@ -265,7 +265,6 @@
             audio.src = playlista[trenutnaPesma].fajl;
             songTitle.innerText = playlista[trenutnaPesma].naslov;
             
-            // Pripremi novi fajl
             audio.load();
             
             if (isPlaying) {
