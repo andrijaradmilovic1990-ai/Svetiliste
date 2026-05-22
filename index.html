@@ -249,7 +249,8 @@
     <script>
         // Playlist podaci
         const playlista = [
-            { naslov: "Creedence", fajl: "creedence.mp3?v=3" }
+            { naslov: "Creedence", fajl: "creedence.mp3?v=3" },
+            { naslov: "Sound of Silence", fajl: "sound-of-silence.mp3" }
         ];
         let trenutnaPesma = 0;
         let isPlaying = false;
@@ -294,7 +295,9 @@
         }
 
         function ponovoPesmu() {
-            audio.currentTime = 0;
+            trenutnaPesma = (trenutnaPesma + 1) % playlista.length;
+            audio.src = playlista[trenutnaPesma].fajl;
+            songTitle.innerText = playlista[trenutnaPesma].naslov;
             audio.play().catch(() => { statusText.innerText = "Greška"; });
         }
 
