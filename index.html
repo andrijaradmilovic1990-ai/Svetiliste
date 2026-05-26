@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Svetilište | Gospodin Niko</title>
+    <meta name="description" content="Svetilište — mesto gde reči postaju štit. Zapisi o mraku, ljudima i onom malom delu slobode koji ostaje kada se svetla ugase. Priče Gospodina Nika.">
+    <meta property="og:title" content="Svetilište | Gospodin Niko">
+    <meta property="og:description" content="Zapisi o mraku, ljudima i onom malom delu slobode koji ostaje kada se svetla ugase.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Svetilište | Gospodin Niko">
+    <meta name="twitter:description" content="Zapisi o mraku, ljudima i onom malom delu slobode koji ostaje kada se svetla ugase.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -215,7 +222,7 @@
         </div>
     </section>
 
-                </div><!-- O Autoru -->
+    <!-- O Autoru -->
     <section id="about" class="py-24 bg-[#050505]">
         <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 text-gray-400">
             <div class="w-48 h-48 bg-gray-900 rounded-full border-4 border-[#121212] flex items-center justify-center text-5xl text-white/20 typewriter-font flex-shrink-0">?</div>
@@ -343,6 +350,10 @@
             document.getElementById('storyModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeStory();
+        });
     </script>
 </body>
 </html>
