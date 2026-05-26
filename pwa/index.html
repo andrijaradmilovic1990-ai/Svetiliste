@@ -167,20 +167,12 @@ function App() {
 
 
   const isSaving = useRef(false);
-  const remoteVersion = useRef(null);
-
-  // Učitaj API ključ iz localStorage
-  useEffect(() => {
-    const k = localStorage.getItem("helena-api-key");
-    if (k) setApiKey(k);
-  }, []);
 
   // Prijavi se na Firebase i slušaj promene u realnom vremenu
   useEffect(() => {
     const unsub = budzetRef.on("value", snapshot => {
       const val = snapshot.val();
       if (val && val.data) {
-        remoteVersion.current = val;
         if (!isSaving.current) {
           setData(val.data);
           if (val.key) setKey(val.key);
@@ -213,7 +205,6 @@ function App() {
     return () => clearTimeout(timer);
   }, [data, key, loaded]);
 
-  useEffect(() => { chatEnd.current?.scrollIntoView({ behavior:"smooth" }); }, [msgs]);
 
   if (!loaded || !data) return (
     <div style={{minHeight:"100vh",background:"#0d0d0d",display:"flex",
