@@ -79,6 +79,41 @@
             letter-spacing: 0.1em;
             color: #666;
         }
+        .playlist-panel {
+            position: absolute;
+            bottom: calc(100% + 0.75rem);
+            right: 0;
+            background: rgba(10, 10, 10, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            min-width: 220px;
+            padding: 0.5rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+        }
+        .playlist-item {
+            padding: 0.6rem 1.25rem;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .playlist-item:hover { color: #fff; }
+        .playlist-item.active { color: #fff; }
+        .playlist-item::before {
+            content: '▸';
+            font-size: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .playlist-item.active::before { opacity: 1; }
+        .playlist-item:hover::before { opacity: 0.5; }
+        .music-player { position: relative; }
     </style>
 </head>
 <body onload="window.scrollTo(0, 0);">
@@ -117,8 +152,8 @@
             <div class="w-2 h-2 bg-white rounded-full"></div>
             <div class="absolute inset-0 border border-white/5 rounded-full"></div>
         </div>
-        <div class="flex flex-col" onclick="toggleMuzika()">
-            <span id="song-title" class="text-[10px] font-bold text-white leading-tight uppercase tracking-tighter">Creedence</span>
+        <div class="flex flex-col">
+            <span id="song-title" class="text-[10px] font-bold text-white leading-tight uppercase tracking-tighter cursor-pointer hover:text-gray-300" onclick="togglePlaylist()">Creedence</span>
             <span id="player-status">Pritisni za ton</span>
         </div>
         <div class="flex items-center gap-2 ml-2 text-white">
@@ -130,6 +165,7 @@
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653zM15 5a1 1 0 012 0v10a1 1 0 11-2 0V5z"/></svg>
             </div>
         </div>
+        <div id="playlist-panel" class="playlist-panel hidden"></div>
     </div>
 
     <!-- Početna Sekcija -->
@@ -393,6 +429,47 @@
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeStory();
+        });
+
+        function renderPlaylist() {
+            const panel = document.getElementById('playlist-panel');
+            panel.innerHTML = playlista.map((p, i) => `
+                <div class="playlist-item ${i === trenutnaPesma ? 'active' : ''}" onclick="izaberiPesmu(${i})">
+                    ${p.naslov}
+                </div>
+            `).join('');
+        }
+
+        function togglePlaylist() {
+            const panel = document.getElementById('playlist-panel');
+            if (panel.classList.contains('hidden')) {
+                renderPlaylist();
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function izaberiPesmu(index) {
+            trenutnaPesma = index;
+            audio.src = playlista[trenutnaPesma].fajl;
+            songTitle.innerText = playlista[trenutnaPesma].naslov;
+            document.getElementById('playlist-panel').classList.add('hidden');
+            statusText.innerText = "Učitavam...";
+            audio.play().then(() => {
+                playSvg.classList.add('hidden');
+                pauseSvg.classList.remove('hidden');
+                vinylIcon.classList.add('vinyl-spin');
+                statusText.innerText = "Slušaš";
+                isPlaying = true;
+            }).catch(() => { statusText.innerText = "Greška"; });
+        }
+
+        document.addEventListener('click', function(e) {
+            const player = document.querySelector('.music-player');
+            if (!player.contains(e.target)) {
+                document.getElementById('playlist-panel').classList.add('hidden');
+            }
         });
     </script>
 </body>
