@@ -265,9 +265,8 @@ function App() {
   }
 
   return (
-    <div style={{ height:"100vh", background:"#0d0d0d", color:"#e8e0d0", fontFamily:"'Georgia',serif", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto" }}>
+    <div style={{ minHeight:"100vh", background:"#0d0d0d", color:"#e8e0d0", fontFamily:"'Georgia',serif", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto" }}>
 
-      {/* Header */}
       <div style={{ padding:"14px 18px", borderBottom:"1px solid #1e1e1e", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <div>
           <div style={{ fontSize:10, letterSpacing:3, color:"#444", textTransform:"uppercase" }}>Andrija & Katarina</div>
@@ -280,19 +279,16 @@ function App() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div style={{ display:"flex", borderBottom:"1px solid #1a1a1a" }}>
         {[["pregled","Pregled"],["transakcije","Transakcije"]].map(([v,l])=>(
           <button key={v} onClick={()=>setView(v)} style={{ flex:1, padding:"10px 0", background:"transparent", border:"none", color:view===v?"#c8a96e":"#3a3a3a", fontSize:11, letterSpacing:2, textTransform:"uppercase", cursor:"pointer", borderBottom:view===v?"2px solid #c8a96e":"2px solid transparent" }}>{l}</button>
         ))}
       </div>
 
-      <div style={{ flex:1, overflow:"auto", padding:"16px", display:"flex", flexDirection:"column" }}>
+      <div style={{ flex:1, overflow:"auto", padding:"16px" }}>
 
-        {/* PREGLED */}
         {view==="pregled" && (
-          <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
-            {/* Prihodi */}
+          <div>
             <div style={{ background:"#161616", border:"1px solid #222", borderRadius:10, padding:"14px 16px", marginBottom:12, display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:10, color:"#444", letterSpacing:2, textTransform:"uppercase" }}>Ukupni prihodi</div>
@@ -313,28 +309,20 @@ function App() {
                 )}
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:6, marginLeft:12 }}>
-                <button onClick={()=>setShowDodajPrihod(true)} style={{ background:"#c8a96e", border:"none", color:"#0d0d0d", borderRadius:7, padding:"8px 12px", cursor:"pointer", fontSize:11, fontWeight:"bold", whiteSpace:"nowrap" }}>
-                  + Prihod
-                </button>
+                <button onClick={()=>setShowDodajPrihod(true)} style={{ background:"#c8a96e", border:"none", color:"#0d0d0d", borderRadius:7, padding:"8px 12px", cursor:"pointer", fontSize:11, fontWeight:"bold", whiteSpace:"nowrap" }}>+ Prihod</button>
                 {ukupnaPlata>0 && (
-                  <button onClick={openRaspored} style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#888", borderRadius:7, padding:"7px 12px", cursor:"pointer", fontSize:11, whiteSpace:"nowrap" }}>
-                    Rasporedi
-                  </button>
+                  <button onClick={openRaspored} style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#888", borderRadius:7, padding:"7px 12px", cursor:"pointer", fontSize:11, whiteSpace:"nowrap" }}>Rasporedi</button>
                 )}
               </div>
             </div>
 
-            {/* Nedelje */}
             <div style={{ fontSize:10, color:"#444", letterSpacing:2, textTransform:"uppercase", marginBottom:8 }}>Nedelje</div>
-            <div style={{ display:"flex", flexDirection:"column", flex:1, justifyContent:"space-between", marginBottom:8 }}>
             {NEDELJE.map(f => {
-              const rsp = mesec.raspored[f]||0;
-              const rsh = mesec.rashod[f]||0;
-              const ost = rsp - rsh;
+              const rsp = mesec.raspored[f]||0, rsh = mesec.rashod[f]||0, ost = rsp-rsh;
               const pct = rsp>0?Math.min((rsh/rsp)*100,100):0;
               const zatvorena = (mesec.zatvoreneNedelje||[]).includes(f);
               return (
-                <div key={f} style={{ background:"#161616", border:`1px solid ${zatvorena?"#1a1a1a":"#1e1e1e"}`, borderRadius:8, padding:"11px 14px", opacity:zatvorena?0.5:1 }}>
+                <div key={f} style={{ background:"#161616", border:`1px solid ${zatvorena?"#1a1a1a":"#1e1e1e"}`, borderRadius:8, padding:"11px 14px", marginBottom:7, opacity:zatvorena?0.5:1 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5, alignItems:"center" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                       <div style={{ width:7, height:7, borderRadius:"50%", background:zatvorena?"#333":"#c8a96e" }} />
@@ -344,9 +332,7 @@ function App() {
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                       <span style={{ fontSize:13, fontWeight:"bold", color:ost<0?"#e08070":zatvorena?"#444":"#e8e0d0" }}>{fmt(ost)}</span>
                       {!zatvorena && (
-                        <button onClick={()=>setShowZatvori(f)} style={{ background:"#1e1e1e", border:"1px solid #2a2a2a", color:"#888", borderRadius:4, padding:"3px 7px", cursor:"pointer", fontSize:10 }}>
-                          Zatvori
-                        </button>
+                        <button onClick={()=>setShowZatvori(f)} style={{ background:"#1e1e1e", border:"1px solid #2a2a2a", color:"#888", borderRadius:4, padding:"3px 7px", cursor:"pointer", fontSize:10 }}>Zatvori</button>
                       )}
                     </div>
                   </div>
@@ -357,18 +343,14 @@ function App() {
                 </div>
               );
             })}
-            </div>
 
-            {/* Ostatci nedelja */}
             {imaOstataka && (
               <>
                 <button onClick={()=>setShowOstatci(v=>!v)} style={{ background:"transparent", border:"none", color:"#5a4a2a", fontSize:11, letterSpacing:2, textTransform:"uppercase", cursor:"pointer", marginBottom:8, padding:0 }}>
                   {showOstatci?"▾":"▸"} Ostatci nedelja
                 </button>
                 {showOstatci && OSTATAK_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>{
-                  const rsp = mesec.raspored[f]||0;
-                  const rsh = mesec.rashod[f]||0;
-                  const ost = rsp-rsh;
+                  const ost=(mesec.raspored[f]||0)-(mesec.rashod[f]||0);
                   return (
                     <div key={f} style={{ background:"#111", border:"1px solid #1a1a1a", borderRadius:8, padding:"10px 14px", marginBottom:6 }}>
                       <div style={{ display:"flex", justifyContent:"space-between" }}>
@@ -381,16 +363,12 @@ function App() {
               </>
             )}
 
-            {/* Fondovi */}
-            <div style={{ fontSize:10, color:"#444", letterSpacing:2, textTransform:"uppercase", margin:"4px 0 8px" }}>Fondovi</div>
-            <div style={{ display:"flex", flexDirection:"column", flex:1, justifyContent:"space-between", marginBottom:8 }}>
+            <div style={{ fontSize:10, color:"#444", letterSpacing:2, textTransform:"uppercase", margin:"12px 0 8px" }}>Fondovi</div>
             {OSTALE.map(f => {
-              const rsp = mesec.raspored[f]||0;
-              const rsh = mesec.rashod[f]||0;
-              const ost = rsp-rsh;
+              const rsp = mesec.raspored[f]||0, rsh = mesec.rashod[f]||0, ost = rsp-rsh;
               const pct = rsp>0?Math.min((rsh/rsp)*100,100):0;
               return (
-                <div key={f} style={{ background:"#161616", border:"1px solid #1e1e1e", borderRadius:8, padding:"11px 14px" }}>
+                <div key={f} style={{ background:"#161616", border:"1px solid #1e1e1e", borderRadius:8, padding:"11px 14px", marginBottom:7 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                       <div style={{ width:7, height:7, borderRadius:"50%", background:BOJE[f] }} />
@@ -405,20 +383,14 @@ function App() {
                 </div>
               );
             })}
-            </div>
 
-            <div style={{ display:"flex", gap:8 }}>
-              <button onClick={()=>setShowPrebaci(true)} style={{ flex:1, padding:"10px", background:"#161616", border:"1px solid #222", color:"#7eb8a4", borderRadius:7, cursor:"pointer", fontSize:12 }}>
-                Prebaci na stranu
-              </button>
-              <button onClick={()=>setShowTx(true)} style={{ flex:1, padding:"10px", background:"#c8a96e", border:"none", color:"#0d0d0d", borderRadius:7, cursor:"pointer", fontSize:12, fontWeight:"bold" }}>
-                + Rashod
-              </button>
+            <div style={{ display:"flex", gap:8, marginTop:14 }}>
+              <button onClick={()=>setShowPrebaci(true)} style={{ flex:1, padding:"10px", background:"#161616", border:"1px solid #222", color:"#7eb8a4", borderRadius:7, cursor:"pointer", fontSize:12 }}>Prebaci na stranu</button>
+              <button onClick={()=>setShowTx(true)} style={{ flex:1, padding:"10px", background:"#c8a96e", border:"none", color:"#0d0d0d", borderRadius:7, cursor:"pointer", fontSize:12, fontWeight:"bold" }}>+ Rashod</button>
             </div>
           </div>
         )}
 
-        {/* TRANSAKCIJE */}
         {view==="transakcije" && (
           <div>
             <button onClick={()=>setShowTx(true)} style={{ width:"100%", padding:"10px", background:"#c8a96e", border:"none", color:"#0d0d0d", borderRadius:7, cursor:"pointer", fontSize:12, fontWeight:"bold", marginBottom:14 }}>+ Novi rashod</button>
@@ -438,7 +410,6 @@ function App() {
         )}
       </div>
 
-      {/* MODAL: Dodaj prihod */}
       {showDodajPrihod && (
         <Modal title="Dodaj prihod" onClose={()=>setShowDodajPrihod(false)}>
           <select value={novoPrihod.ko} onChange={e=>setNovoPrihod(p=>({...p,ko:e.target.value}))} style={S.inp}>
@@ -451,7 +422,6 @@ function App() {
         </Modal>
       )}
 
-      {/* MODAL: Rasporedi */}
       {showRaspored && (
         <Modal title="Raspored prihoda" onClose={()=>setShowRaspored(false)}>
           <div style={{ fontSize:10, color:"#555", letterSpacing:2, textTransform:"uppercase", margin:"14px 0 8px" }}>Nedelje</div>
@@ -474,15 +444,12 @@ function App() {
             const sum = FASCIKLE.reduce((a,f)=>a+(parseFloat(tempR[f])||0),0);
             const diff = ukupnaPlata-sum;
             if (!ukupnaPlata||diff===0) return null;
-            return <div style={{ fontSize:11, color:diff>0?"#7eb8a4":"#e08070", marginTop:6 }}>
-              {diff>0?`Ostaje: ${fmt(diff)}`:`Previše za: ${fmt(Math.abs(diff))}`}
-            </div>;
+            return <div style={{ fontSize:11, color:diff>0?"#7eb8a4":"#e08070", marginTop:6 }}>{diff>0?`Ostaje: ${fmt(diff)}`:`Previše za: ${fmt(Math.abs(diff))}`}</div>;
           })()}
           <Btns onCancel={()=>setShowRaspored(false)} onOk={saveRaspored} okLabel="Sačuvaj" />
         </Modal>
       )}
 
-      {/* MODAL: Rashod */}
       {showTx && (
         <Modal title="Novi rashod" onClose={()=>setShowTx(false)}>
           <input value={tx.opis} onChange={e=>setTx(p=>({...p,opis:e.target.value}))} placeholder="Opis" style={S.inp} />
@@ -494,7 +461,6 @@ function App() {
         </Modal>
       )}
 
-      {/* MODAL: Prebaci na stranu */}
       {showPrebaci && (
         <Modal title="Prebaci na stranu → Štednja" titleColor="#7eb8a4" onClose={()=>setShowPrebaci(false)}>
           <select value={preb.f} onChange={e=>setPreb(p=>({...p,f:e.target.value}))} style={S.inp}>
@@ -507,7 +473,6 @@ function App() {
         </Modal>
       )}
 
-      {/* MODAL: Zatvori nedelju */}
       {showZatvori && (
         <Modal title={`Zatvori ${showZatvori}?`} titleColor="#e08070" onClose={()=>setShowZatvori(null)}>
           <div style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>
@@ -518,12 +483,9 @@ function App() {
         </Modal>
       )}
 
-      {/* MODAL: Obriši transakciju */}
       {showDelete!==null && (
         <Modal title="Obriši transakciju?" titleColor="#e08070" onClose={()=>setShowDelete(null)}>
-          <div style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>
-            Rashod će biti vraćen nazad u fasciklu.
-          </div>
+          <div style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>Rashod će biti vraćen nazad u fasciklu.</div>
           <Btns onCancel={()=>setShowDelete(null)} onOk={()=>obrisiTx(showDelete)} okLabel="Obriši" okColor="#e08070" />
         </Modal>
       )}
