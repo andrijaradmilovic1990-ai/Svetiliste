@@ -60,7 +60,7 @@
   <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useRef, useEffect, useCallback } = React;
+const { useState, useEffect, useRef } = React;
 
 // ── Firebase init ──────────────────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -165,13 +165,6 @@ function App() {
   const [tx,        setTx]        = useState({ opis:"", iznos:"", f:FASCIKLE[0] });
   const [preb,      setPreb]      = useState({ f:FASCIKLE[0], iznos:"" });
 
-  const [msgs,    setMsgs]    = useState([{role:"assistant",text:"Zdravo. Pitaj me za preporuke ili savete."}]);
-  const [chatIn,  setChatIn]  = useState("");
-  const [apiKey,  setApiKey]  = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [tempApiKey,   setTempApiKey]   = useState("");
-  const chatEnd = useRef(null);
 
   const isSaving = useRef(false);
   const remoteVersion = useRef(null);
@@ -342,39 +335,6 @@ function App() {
   const nerasporedj    = ukupnaPlata - ukupnoRaspored;
   const imaOstataka    = OSTATAK_FASC.some(f=>(mesec.raspored[f]||0)>0);
 
-  async function sendChat() {
-    if (!chatIn.trim()||loading) return;
-    if (!apiKey) { setShowSettings(true); return; }
-    const msg = chatIn.trim();
-    setChatIn("");
-    setMsgs(p=>[...p,{role:"user",text:msg}]);
-    setLoading(true);
-    const system = `Ti si Helena — finansijski asistent za kućni budžet Andrije i Katarine. Direktna, blago sarkastična, korisna. Srpski.
-Mesec: ${mkLabel(key)} | Ukupni prihodi: ${fmt(ukupnaPlata)}${(mesec.prihodi||[]).map(p=>` (${p.ko}: ${fmt(p.iznos)})`).join('')}
-${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(mesec.raspored[f])}, potrošeno ${fmt(mesec.rashod[f]||0)}, ostalo ${fmt((mesec.raspored[f]||0)-(mesec.rashod[f]||0))}`).join("\n")}`;
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{ "Content-Type":"application/json", "x-api-key":apiKey,
-                  "anthropic-version":"2023-06-01",
-                  "anthropic-dangerous-direct-browser-access":"true" },
-        body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:1000, system,
-          messages:[...msgs.slice(1).map(m=>({role:m.role,content:m.text})),{role:"user",content:msg}]
-        })
-      });
-      const d = await res.json();
-      setMsgs(p=>[...p,{role:"assistant",text:d.content?.find(b=>b.type==="text")?.text||"Greška."}]);
-    } catch { setMsgs(p=>[...p,{role:"assistant",text:"Greška u konekciji."}]); }
-    setLoading(false);
-  }
-
-  function saveApiKey() {
-    localStorage.setItem("helena-api-key", tempApiKey);
-    setApiKey(tempApiKey);
-    setShowSettings(false);
-  }
-
   return (
     <div style={{minHeight:"100vh",background:"#0d0d0d",color:"#e8e0d0",
                  fontFamily:"'Georgia',serif",display:"flex",flexDirection:"column",
@@ -399,7 +359,7 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
 
       {/* ── Tabs ── */}
       <div style={{display:"flex",borderBottom:"1px solid #1a1a1a"}}>
-        {[["pregled","Pregled"],["transakcije","Transakcije"],["chat","Chat"]].map(([v,l])=>(
+        {[["pregled","Pregled"],["transakcije","Transakcije"]].map(([v,l])=>(
           <button key={v} onClick={()=>setView(v)}
               style={{flex:1,padding:"10px 0",background:"transparent",border:"none",
                       color:view===v?"#c8a96e":"#3a3a3a",fontSize:11,letterSpacing:2,
@@ -546,9 +506,9 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
             <button onClick={()=>setShowTx(true)}
                 style={{width:"100%",padding:"10px",background:"#c8a96e",border:"none",color:"#0d0d0d",
                         borderRadius:7,cursor:"pointer",fontSize:12,fontWeight:"bold",marginBottom:14}}>+ Novi rashod</button>
-            {mesec.transakcije.length===0
+            {(mesec.transakcije||[]).length===0
               ? <div style={{color:"#333",fontSize:13}}>Nema transakcija za {mkLabel(key)}.</div>
-              : mesec.transakcije.map((t,i)=>(
+              : (mesec.transakcije||[]).map((t,i)=>(
                 <div key={i} onClick={()=>setShowDelete(i)}
                     style={{background:"#161616",border:"1px solid #1e1e1e",borderRadius:8,
                             padding:"11px 14px",marginBottom:7,
@@ -567,50 +527,6 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
           </div>
         )}
 
-        {/* ══ CHAT ══ */}
-        {view==="chat" && (
-          <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 195px)"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <span style={{fontSize:11,color:"#555"}}>Helena — finansijski asistent</span>
-              <button onClick={()=>{setTempApiKey(apiKey);setShowSettings(true);}}
-                  style={{background:"transparent",border:"1px solid #2a2a2a",color:"#555",
-                          borderRadius:4,padding:"3px 8px",cursor:"pointer",fontSize:10}}>
-                {apiKey?"⚙ API ključ":"⚙ Podesi ključ"}
-              </button>
-            </div>
-            {!apiKey && (
-              <div style={{background:"#1a1410",border:"1px solid #3a2a10",borderRadius:8,
-                           padding:"12px 14px",marginBottom:12,fontSize:12,color:"#8a6a30",lineHeight:1.6}}>
-                Chat zahteva Anthropic API ključ. Klikni ⚙ da ga uneseš.<br/>
-                <span style={{fontSize:10,color:"#5a4a20"}}>Nabavi na: console.anthropic.com</span>
-              </div>
-            )}
-            <div style={{flex:1,overflowY:"auto",marginBottom:10}}>
-              {msgs.map((m,i)=>(
-                <div key={i} style={{marginBottom:10,display:"flex",flexDirection:m.role==="user"?"row-reverse":"row"}}>
-                  <div style={{maxWidth:"84%",background:m.role==="user"?"#c8a96e":"#161616",
-                               color:m.role==="user"?"#0d0d0d":"#e8e0d0",borderRadius:10,
-                               padding:"9px 13px",fontSize:13,lineHeight:1.55,
-                               border:m.role==="assistant"?"1px solid #222":"none",whiteSpace:"pre-wrap"}}>
-                    {m.text}
-                  </div>
-                </div>
-              ))}
-              {loading&&<div style={{color:"#333",fontSize:12}}>Helena kuca...</div>}
-              <div ref={chatEnd} />
-            </div>
-            <div style={{display:"flex",gap:8}}>
-              <input value={chatIn} onChange={e=>setChatIn(e.target.value)}
-                  onKeyDown={e=>e.key==="Enter"&&sendChat()}
-                  placeholder="Pitaj nešto..."
-                  style={{flex:1,background:"#161616",border:"1px solid #222",color:"#e8e0d0",
-                          borderRadius:7,padding:"9px 13px",fontSize:13,outline:"none"}} />
-              <button onClick={sendChat} disabled={loading}
-                  style={{background:"#c8a96e",border:"none",color:"#0d0d0d",
-                          borderRadius:7,padding:"0 14px",cursor:"pointer",fontWeight:"bold",fontSize:14}}>→</button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ══ MODALI ══ */}
@@ -721,26 +637,13 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
       {showDelete!==null && (
         <Modal title="Obriši transakciju?" titleColor="#e08070" onClose={()=>setShowDelete(null)}>
           <div style={{fontSize:13,color:"#888",lineHeight:1.6}}>
-            <span style={{color:"#e8e0d0"}}>{mesec.transakcije[showDelete]?.opis}</span>
+            <span style={{color:"#e8e0d0"}}>{(mesec.transakcije||[])[showDelete]?.opis}</span>
             <br/>
-            <span style={{color:"#e08070",fontWeight:"bold"}}>{fmt(mesec.transakcije[showDelete]?.iznos)}</span>
+            <span style={{color:"#e08070",fontWeight:"bold"}}>{fmt((mesec.transakcije||[])[showDelete]?.iznos)}</span>
             <br/><br/>
             Rashod će biti vraćen nazad u fasciklu.
           </div>
           <Btns onCancel={()=>setShowDelete(null)} onOk={()=>deleteTx(showDelete)} okLabel="Obriši" okColor="#e08070" />
-        </Modal>
-      )}
-
-      {/* API ključ settings */}
-      {showSettings && (
-        <Modal title="Helena — API ključ" titleColor="#a07bbf" onClose={()=>setShowSettings(false)}>
-          <div style={{fontSize:12,color:"#555",marginBottom:10,lineHeight:1.6}}>
-            Anthropic API ključ čuva se samo u tvom browseru (localStorage).<br/>
-            Nabavi ga na: <span style={{color:"#7eb8a4"}}>console.anthropic.com</span>
-          </div>
-          <input value={tempApiKey} onChange={e=>setTempApiKey(e.target.value)}
-              type="password" placeholder="sk-ant-..." style={S.inp} />
-          <Btns onCancel={()=>setShowSettings(false)} onOk={saveApiKey} okLabel="Sačuvaj" okColor="#a07bbf" />
         </Modal>
       )}
 
