@@ -358,7 +358,7 @@ function App() {
         ))}
       </div>
 
-      <div style={{flex:1,overflow:"auto",padding:"16px"}}>
+      <div style={{flex:1,overflow:"auto",padding:"16px",paddingBottom:"70px"}}>
 
         {/* ══ PREGLED ══ */}
         {view==="pregled" && (
@@ -479,14 +479,6 @@ function App() {
               );
             })}
 
-            <div style={{display:"flex",gap:8,marginTop:14}}>
-              <button onClick={()=>setShowPrebaci(true)}
-                  style={{flex:1,padding:"10px",background:"#161616",border:"1px solid #222",
-                          color:"#7eb8a4",borderRadius:7,cursor:"pointer",fontSize:12}}>Na stranu</button>
-              <button onClick={()=>setShowTx(true)}
-                  style={{flex:1,padding:"10px",background:"#c8a96e",border:"none",color:"#0d0d0d",
-                          borderRadius:7,cursor:"pointer",fontSize:12,fontWeight:"bold"}}>+ Rashod</button>
-            </div>
           </div>
         )}
 
@@ -518,6 +510,19 @@ function App() {
         )}
 
       </div>
+
+      {/* ── Bottom bar ── */}
+      {view==="pregled" && (
+        <div style={{position:"fixed",bottom:0,left:0,right:0,display:"flex",gap:8,
+                     padding:"10px 16px 20px",background:"#0d0d0d",borderTop:"1px solid #1a1a1a"}}>
+          <button onClick={()=>setShowPrebaci(true)}
+              style={{flex:1,padding:"12px",background:"#161616",border:"1px solid #222",
+                      color:"#7eb8a4",borderRadius:7,cursor:"pointer",fontSize:13}}>Na stranu</button>
+          <button onClick={()=>setShowTx(true)}
+              style={{flex:1,padding:"12px",background:"#c8a96e",border:"none",color:"#0d0d0d",
+                      borderRadius:7,cursor:"pointer",fontSize:13,fontWeight:"bold"}}>+ Rashod</button>
+        </div>
+      )}
 
       {/* ══ MODALI ══ */}
 

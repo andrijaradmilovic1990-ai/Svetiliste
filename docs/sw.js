@@ -1,4 +1,4 @@
-const CACHE = 'budzet-v4';
+const CACHE = 'budzet-v5';
 const STATIC = ['manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
 
 self.addEventListener('install', e => {
