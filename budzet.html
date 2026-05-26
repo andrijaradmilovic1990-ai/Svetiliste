@@ -7,11 +7,12 @@
 
   <!-- PWA -->
   <meta name="theme-color" content="#0d0d0d" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="Kućni budžet" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='38' fill='%230d0d0d'/%3E%3Ctext x='96' y='136' text-anchor='middle' font-family='Georgia,serif' font-size='108' font-weight='bold' fill='%23c8a96e'%3EB%3C/text%3E%3C/svg%3E" />
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Ku%C4%87ni+bud%C5%BEet%22%2C%22short_name%22%3A%22Bud%C5%BEet%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22background_color%22%3A%22%230d0d0d%22%2C%22theme_color%22%3A%22%230d0d0d%22%2C%22start_url%22%3A%22.%2F%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%2520width%3D'192'%2520height%3D'192'%2520viewBox%3D'0%25200%2520192%2520192'%253E%253Crect%2520width%3D'192'%2520height%3D'192'%2520rx%3D'38'%2520fill%3D'%25230d0d0d'%2F%253E%253Ctext%2520x%3D'96'%2520y%3D'136'%2520text-anchor%3D'middle'%2520font-family%3D'Georgia%2Cserif'%2520font-size%3D'108'%2520font-weight%3D'bold'%2520fill%3D'%2523c8a96e'%253EB%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D" />
+  <meta name="apple-mobile-web-app-title" content="Budžet" />
+  <link rel="apple-touch-icon" href="/icon-512.png" />
+  <link rel="manifest" href="/manifest.json" />
 
   <!-- ═══════════════════════════════════════════════════════════════
        FIREBASE PODEŠAVANJA — popuni ova polja pre deploy-a
@@ -87,7 +88,7 @@ const fmt    = n => new Intl.NumberFormat("sr-RS").format(Math.round(n||0))+" RS
 const mkKey  = d => `${d.getFullYear()}-${d.getMonth()}`;
 const mkLabel= key => { const [y,m]=key.split("-").map(Number); return `${MESECI[m]} ${y}`; };
 const mkEmpty= () => ({
-  plata:0,
+  prihodi: [],
   raspored: Object.fromEntries(SVE_FASCIKLE.map(f=>[f,0])),
   rashod:   Object.fromEntries(SVE_FASCIKLE.map(f=>[f,0])),
   transakcije:[],
@@ -151,14 +152,15 @@ function App() {
   const [sync,   setSync]   = useState("ok"); // "ok" | "saving" | "error"
   const [view,   setView]   = useState("pregled");
 
-  const [showRaspored, setShowRaspored] = useState(false);
-  const [showTx,       setShowTx]       = useState(false);
-  const [showPrebaci,  setShowPrebaci]  = useState(false);
-  const [showZatvori,  setShowZatvori]  = useState(null);
-  const [showOstatci,  setShowOstatci]  = useState(false);
-  const [showDelete,   setShowDelete]   = useState(null); // transakcija indeks
+  const [showRaspored,    setShowRaspored]    = useState(false);
+  const [showDodajPrihod, setShowDodajPrihod] = useState(false);
+  const [showTx,          setShowTx]          = useState(false);
+  const [showPrebaci,     setShowPrebaci]     = useState(false);
+  const [showZatvori,     setShowZatvori]     = useState(null);
+  const [showOstatci,     setShowOstatci]     = useState(false);
+  const [showDelete,      setShowDelete]      = useState(null);
 
-  const [tempPlata, setTempPlata] = useState("");
+  const [newPrihod, setNewPrihod] = useState({ iznos: '', ko: 'Andrija' });
   const [tempR,     setTempR]     = useState({});
   const [tx,        setTx]        = useState({ opis:"", iznos:"", f:FASCIKLE[0] });
   const [preb,      setPreb]      = useState({ f:FASCIKLE[0], iznos:"" });
@@ -245,17 +247,30 @@ function App() {
   }
 
   function openRaspored() {
-    setTempPlata(mesec.plata || "");
     setTempR({ ...mesec.raspored });
     setShowRaspored(true);
   }
 
   function saveRaspored() {
-    const plata = parseFloat(tempPlata)||0;
     const raspored = { ...mesec.raspored };
     FASCIKLE.forEach(f => { raspored[f] = parseFloat(tempR[f])||0; });
-    updateMesec(m => ({ ...m, plata, raspored }));
+    updateMesec(m => ({ ...m, raspored }));
     setShowRaspored(false);
+  }
+
+  function addPrihod() {
+    const iznos = parseFloat(newPrihod.iznos);
+    if (!iznos) return;
+    const prihod = { iznos, ko: newPrihod.ko, datum: new Date().toLocaleDateString("sr-RS") };
+    updateMesec(m => ({ ...m, prihodi: [...(m.prihodi||[]), prihod] }));
+    setNewPrihod({ iznos: '', ko: 'Andrija' });
+    setShowDodajPrihod(false);
+    setTempR({ ...mesec.raspored });
+    setShowRaspored(true);
+  }
+
+  function obrisiPrihod(idx) {
+    updateMesec(m => ({ ...m, prihodi: (m.prihodi||[]).filter((_,i)=>i!==idx) }));
   }
 
   function addTx() {
@@ -320,8 +335,11 @@ function App() {
     setShowZatvori(null);
   }
 
+  const ukupnaPlata    = (mesec.prihodi?.length > 0)
+    ? mesec.prihodi.reduce((a,p)=>a+(p.iznos||0),0)
+    : (mesec.plata||0); // backward compat
   const ukupnoRaspored = FASCIKLE.reduce((a,f)=>a+(mesec.raspored[f]||0),0);
-  const nerasporedj    = mesec.plata - ukupnoRaspored;
+  const nerasporedj    = ukupnaPlata - ukupnoRaspored;
   const imaOstataka    = OSTATAK_FASC.some(f=>(mesec.raspored[f]||0)>0);
 
   async function sendChat() {
@@ -332,7 +350,7 @@ function App() {
     setMsgs(p=>[...p,{role:"user",text:msg}]);
     setLoading(true);
     const system = `Ti si Helena — finansijski asistent za kućni budžet Andrije i Katarine. Direktna, blago sarkastična, korisna. Srpski.
-Mesec: ${mkLabel(key)} | Plata: ${fmt(mesec.plata)}
+Mesec: ${mkLabel(key)} | Ukupni prihodi: ${fmt(ukupnaPlata)}${(mesec.prihodi||[]).map(p=>` (${p.ko}: ${fmt(p.iznos)})`).join('')}
 ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(mesec.raspored[f])}, potrošeno ${fmt(mesec.rashod[f]||0)}, ostalo ${fmt((mesec.raspored[f]||0)-(mesec.rashod[f]||0))}`).join("\n")}`;
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -395,24 +413,43 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
         {/* ══ PREGLED ══ */}
         {view==="pregled" && (
           <div>
-            {/* Plata kartica */}
-            <div style={{background:"#161616",border:"1px solid #222",borderRadius:10,
-                         padding:"14px 16px",marginBottom:12,
-                         display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div>
-                <div style={{fontSize:10,color:"#444",letterSpacing:2,textTransform:"uppercase"}}>Plata ovog meseca</div>
-                <div style={{fontSize:26,color:"#c8a96e",fontWeight:"bold",marginTop:2}}>{fmt(mesec.plata)}</div>
-                {mesec.plata>0 && nerasporedj!==0 && (
-                  <div style={{fontSize:11,color:nerasporedj>0?"#7eb8a4":"#e08070",marginTop:3}}>
-                    {nerasporedj>0?`+${fmt(nerasporedj)} neraspoređeno`:`${fmt(Math.abs(nerasporedj))} previše`}
-                  </div>
-                )}
+            {/* Prihodi kartica */}
+            <div style={{background:"#161616",border:"1px solid #222",borderRadius:10,padding:"14px 16px",marginBottom:12}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:10,color:"#444",letterSpacing:2,textTransform:"uppercase"}}>Ukupni prihodi</div>
+                  <div style={{fontSize:26,color:"#c8a96e",fontWeight:"bold",marginTop:2}}>{fmt(ukupnaPlata)}</div>
+                  {(mesec.prihodi||[]).map((p,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:5}}>
+                      <span style={{fontSize:11,color:"#666"}}>{p.ko} · {p.datum}</span>
+                      <div style={{display:"flex",alignItems:"center",gap:8}}>
+                        <span style={{fontSize:11,color:"#888"}}>{fmt(p.iznos)}</span>
+                        <button onClick={()=>obrisiPrihod(i)}
+                            style={{background:"transparent",border:"none",color:"#3a3a3a",cursor:"pointer",fontSize:12,padding:"0 2px"}}>×</button>
+                      </div>
+                    </div>
+                  ))}
+                  {ukupnaPlata>0 && nerasporedj!==0 && (
+                    <div style={{fontSize:11,color:nerasporedj>0?"#7eb8a4":"#e08070",marginTop:6}}>
+                      {nerasporedj>0?`+${fmt(nerasporedj)} neraspoređeno`:`${fmt(Math.abs(nerasporedj))} previše`}
+                    </div>
+                  )}
+                </div>
+                <div style={{display:"flex",flexDirection:"column",gap:6,marginLeft:12}}>
+                  <button onClick={()=>setShowDodajPrihod(true)}
+                      style={{background:"#c8a96e",border:"none",color:"#0d0d0d",borderRadius:7,
+                              padding:"8px 12px",cursor:"pointer",fontSize:11,fontWeight:"bold",whiteSpace:"nowrap"}}>
+                    + Prihod
+                  </button>
+                  {ukupnaPlata>0 && (
+                    <button onClick={openRaspored}
+                        style={{background:"transparent",border:"1px solid #2a2a2a",color:"#888",borderRadius:7,
+                                padding:"7px 12px",cursor:"pointer",fontSize:11,whiteSpace:"nowrap"}}>
+                      Rasporedi
+                    </button>
+                  )}
+                </div>
               </div>
-              <button onClick={openRaspored}
-                  style={{background:"#c8a96e",border:"none",color:"#0d0d0d",borderRadius:7,
-                          padding:"8px 14px",cursor:"pointer",fontSize:12,fontWeight:"bold"}}>
-                {mesec.plata>0?"Izmeni":"Rasporedi"}
-              </button>
             </div>
 
             {/* Nedelje */}
@@ -578,11 +615,38 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
 
       {/* ══ MODALI ══ */}
 
-      {/* Rasporedi platu */}
+      {/* Dodaj prihod */}
+      {showDodajPrihod && (
+        <Modal title="Dodaj prihod" onClose={()=>setShowDodajPrihod(false)}>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            {['Andrija','Katarina'].map(ko=>(
+              <button key={ko} onClick={()=>setNewPrihod(p=>({...p,ko}))}
+                  style={{flex:1,padding:"10px",
+                          background:newPrihod.ko===ko?"#c8a96e":"#1e1e1e",
+                          border:`1px solid ${newPrihod.ko===ko?"#c8a96e":"#2a2a2a"}`,
+                          color:newPrihod.ko===ko?"#0d0d0d":"#666",
+                          borderRadius:6,cursor:"pointer",fontSize:13,fontWeight:"bold"}}>
+                {ko}
+              </button>
+            ))}
+          </div>
+          <input value={newPrihod.iznos} onChange={e=>setNewPrihod(p=>({...p,iznos:e.target.value}))}
+              type="number" placeholder="Iznos (RSD)" style={S.inp} autoFocus />
+          <div style={{fontSize:11,color:"#555",marginTop:8}}>
+            Posle dodavanja, odmah možeš da rasporediš.
+          </div>
+          <Btns onCancel={()=>setShowDodajPrihod(false)} onOk={addPrihod} okLabel="Dodaj i rasporedi" />
+        </Modal>
+      )}
+
+      {/* Rasporedi */}
       {showRaspored && (
-        <Modal title="Raspored plate" onClose={()=>setShowRaspored(false)}>
-          <input value={tempPlata} onChange={e=>setTempPlata(e.target.value)}
-              type="number" placeholder="Ukupna plata (RSD)" style={S.inp} />
+        <Modal title={`Raspored — ukupno ${fmt(ukupnaPlata)}`} onClose={()=>setShowRaspored(false)}>
+          {nerasporedj!==0 && ukupnaPlata>0 && (
+            <div style={{fontSize:11,color:nerasporedj>0?"#7eb8a4":"#e08070",marginBottom:12}}>
+              {nerasporedj>0?`Neraspoređeno: ${fmt(nerasporedj)}`:`Previše za: ${fmt(Math.abs(nerasporedj))}`}
+            </div>
+          )}
           <div style={{fontSize:10,color:"#555",letterSpacing:2,textTransform:"uppercase",margin:"14px 0 8px"}}>Nedelje</div>
           {NEDELJE.map(f=>(
             <div key={f} style={{display:"flex",alignItems:"center",gap:8,marginBottom:7}}>
@@ -603,8 +667,8 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
           ))}
           {(()=>{
             const sum=FASCIKLE.reduce((a,f)=>a+(parseFloat(tempR[f])||0),0);
-            const pl=parseFloat(tempPlata)||0, diff=pl-sum;
-            if (!pl||diff===0) return null;
+            const diff=ukupnaPlata-sum;
+            if (!ukupnaPlata||diff===0) return null;
             return <div style={{fontSize:11,color:diff>0?"#7eb8a4":"#e08070",marginTop:6}}>
               {diff>0?`Ostaje: ${fmt(diff)}`:`Previše za: ${fmt(Math.abs(diff))}`}
             </div>;
@@ -685,6 +749,14 @@ ${SVE_FASCIKLE.filter(f=>(mesec.raspored[f]||0)>0).map(f=>`${f}: raspored ${fmt(
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
 </script>
 </body>
 </html>
