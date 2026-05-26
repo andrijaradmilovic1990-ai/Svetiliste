@@ -358,11 +358,11 @@ function App() {
         ))}
       </div>
 
-      <div style={{flex:1,overflow:"auto",padding:"16px",paddingBottom:"70px"}}>
+      <div style={{flex:1,overflow:"auto",padding:"16px",paddingBottom:"70px",display:"flex",flexDirection:"column"}}>
 
         {/* ══ PREGLED ══ */}
         {view==="pregled" && (
-          <div>
+          <div style={{display:"flex",flexDirection:"column",flex:1}}>
             {/* Prihodi kartica */}
             <div style={{background:"#161616",border:"1px solid #222",borderRadius:10,padding:"14px 16px",marginBottom:12}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
@@ -404,13 +404,15 @@ function App() {
 
             {/* Nedelje */}
             <div style={{fontSize:10,color:"#444",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Nedelje</div>
+            <div style={{display:"flex",flexDirection:"column",flex:1,gap:6,marginBottom:8}}>
             {NEDELJE.map(f=>{
               const rsp=mesec.raspored[f]||0, rsh=mesec.rashod[f]||0, ost=rsp-rsh;
               const pct=rsp>0?Math.min((rsh/rsp)*100,100):0;
               const zatvorena=(mesec.zatvoreneNedelje||[]).includes(f);
               return (
                 <div key={f} style={{background:"#161616",border:`1px solid ${zatvorena?"#1a1a1a":"#1e1e1e"}`,
-                                     borderRadius:8,padding:"11px 14px",marginBottom:7,opacity:zatvorena?0.5:1}}>
+                                     borderRadius:8,padding:"11px 14px",flex:1,display:"flex",flexDirection:"column",
+                                     justifyContent:"center",opacity:zatvorena?0.5:1}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:5,alignItems:"center"}}>
                     <div style={{display:"flex",alignItems:"center",gap:8}}>
                       <div style={{width:7,height:7,borderRadius:"50%",background:zatvorena?"#333":"#c8a96e"}} />
@@ -433,6 +435,7 @@ function App() {
                 </div>
               );
             })}
+            </div>
 
             {/* Ostatci nedelja */}
             {imaOstataka && (
@@ -458,12 +461,14 @@ function App() {
             )}
 
             {/* Fondovi */}
-            <div style={{fontSize:10,color:"#444",letterSpacing:2,textTransform:"uppercase",margin:"12px 0 8px"}}>Fondovi</div>
+            <div style={{fontSize:10,color:"#444",letterSpacing:2,textTransform:"uppercase",margin:"8px 0 8px"}}>Fondovi</div>
+            <div style={{display:"flex",flexDirection:"column",flex:1,gap:6}}>
             {OSTALE.map(f=>{
               const rsp=mesec.raspored[f]||0, rsh=mesec.rashod[f]||0, ost=rsp-rsh;
               const pct=rsp>0?Math.min((rsh/rsp)*100,100):0;
               return (
-                <div key={f} style={{background:"#161616",border:"1px solid #1e1e1e",borderRadius:8,padding:"11px 14px",marginBottom:7}}>
+                <div key={f} style={{background:"#161616",border:"1px solid #1e1e1e",borderRadius:8,padding:"11px 14px",
+                                     flex:1,display:"flex",flexDirection:"column",justifyContent:"center"}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
                     <div style={{display:"flex",alignItems:"center",gap:8}}>
                       <div style={{width:7,height:7,borderRadius:"50%",background:BOJE[f]}} />
@@ -478,6 +483,7 @@ function App() {
                 </div>
               );
             })}
+            </div>
 
           </div>
         )}
