@@ -31,6 +31,7 @@ body { background-color:#0a0a0a; color:#d1d1d1; font-family:'Inter',sans-serif; 
 <a href="#home" class="text-xl font-bold tracking-tighter typewriter-font text-white uppercase">SVETILIŠTE</a>
 <div class="space-x-8 text-sm uppercase tracking-widest hidden md:flex">
 <a href="#home" class="hover:text-white transition">Početna</a>
+<a href="novele.html" class="hover:text-white transition">Novele</a>
 <a href="#stories" class="hover:text-white transition">Priče</a>
 <a href="#about" class="hover:text-white transition">O Autoru</a>
 </div>
@@ -44,6 +45,7 @@ body { background-color:#0a0a0a; color:#d1d1d1; font-family:'Inter',sans-serif; 
 <!-- Mobile Menu Overlay -->
 <div id="mobile-menu" class="fixed inset-0 z-[90] bg-black flex flex-col items-center justify-center space-y-8 text-2xl uppercase tracking-[0.3em] transform -translate-y-full md:hidden">
 <a href="#home" onclick="toggleMenu()" class="hover:text-white transition typewriter-font">Početna</a>
+<a href="novele.html" class="hover:text-white transition typewriter-font">Novele</a>
 <a href="#stories" onclick="toggleMenu()" class="hover:text-white transition typewriter-font">Priče</a>
 <a href="#about" onclick="toggleMenu()" class="hover:text-white transition typewriter-font">O Autoru</a>
 <button onclick="toggleMenu()" class="mt-8 text-gray-500 text-sm tracking-widest">Zatvori</button>
@@ -69,15 +71,21 @@ Mesto gde reči postaju štit. Zapisi o mraku, ljudima i onom malom delu slobode
      Nove priče stavljaj na VRH da budu "najnoviji zapisi".
      =================================================================== -->
 <section id="stories" class="py-24 px-6 max-w-7xl mx-auto">
+
+<!-- Banner za novele (duže priče) -->
+<a href="novele.html" class="block mb-16 no-underline">
+<div class="story-card rounded-lg p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6" style="background:linear-gradient(135deg,#141414,#0c0c0c);">
+<div>
+<span class="text-xs text-gray-500 uppercase tracking-widest">Duže priče</span>
+<h2 class="typewriter-font text-3xl md:text-4xl text-white mt-2 mb-3">Novele</h2>
+<p class="text-gray-400 text-sm leading-relaxed max-w-xl">Priče kojima treba više prostora — više poglavlja, dublji mrak, sporiji nož. Trenutno: <span class="text-gray-300">Bibliotekar i katalog sopstva</span> i <span class="text-gray-300">Mrtve Zvezde</span>.</p>
+</div>
+<span class="text-white text-sm font-bold uppercase tracking-widest whitespace-nowrap">Uđi u policu →</span>
+</div>
+</a>
+
 <h2 class="text-3xl font-bold text-white mb-12 border-l-4 border-white pl-4 typewriter-font">Najnoviji Zapisi</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-<a href="mrtve-zvezde.html" class="story-card p-8 rounded-lg flex flex-col h-full no-underline">
-<span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Noir / Mrak / Istraga</span>
-<h3 class="text-xl font-bold text-white mb-4">Mrtve Zvezde</h3>
-<p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Svetlost putuje skoro trista hiljada kilometara u sekundi. Ali ova crvena svetlost ne može da dobaci ni do mog stola...</p>
-<span class="text-white text-xs font-bold uppercase tracking-widest">Pročitaj više →</span>
-</a>
 
 <a href="rain.html" class="story-card p-8 rounded-lg flex flex-col h-full no-underline">
 <span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Kratka priča / Muzika</span>

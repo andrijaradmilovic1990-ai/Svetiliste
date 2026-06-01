@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novele | Svetilište</title>
+<meta name="description" content="Duže priče Gospodina Nika — novele iz Svetilišta. Mrak, drama, gorko-slatki završeci.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+body { background-color:#0a0a0a; color:#d1d1d1; font-family:'Inter',sans-serif; scroll-behavior:smooth; }
+.typewriter-font { font-family:'Special Elite',cursive; }
+.story-card { background:#121212; border:1px solid #1f1f1f; transition:all .3s ease; }
+.story-card:hover { border-color:#444; transform:translateY(-2px); }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:#0a0a0a; }
+::-webkit-scrollbar-thumb { background:#333; border-radius:10px; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<nav class="fixed w-full z-[100] bg-black/90 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center">
+<a href="index.html" class="text-xl font-bold tracking-tighter typewriter-font text-white uppercase">SVETILIŠTE</a>
+<a href="index.html" class="text-gray-400 text-sm uppercase tracking-widest hover:text-white transition">← Nazad na arhivu</a>
+</nav>
+
+<header class="pt-36 pb-16 px-6 max-w-3xl mx-auto text-center">
+<span class="text-xs text-gray-500 uppercase tracking-widest">Duže priče</span>
+<h1 class="typewriter-font text-4xl md:text-6xl text-white mt-4 mb-6 leading-tight">Novele</h1>
+<p class="text-gray-400 font-light leading-relaxed">
+Priče kojima treba više prostora da se ispričaju. Više poglavlja, dublji mrak, sporiji nož.
+</p>
+</header>
+
+<!-- ===================================================================
+     NOVELE
+     >>> DODAVANJE NOVE NOVELE <<<
+     Kopiraj jedan <a class="story-card">...</a> blok ispod,
+     promeni: href (ime fajla), kategoriju, naslov i teaser.
+     Nove novele stavljaj na VRH.
+     =================================================================== -->
+<section class="pb-24 px-6 max-w-5xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+<a href="bibliotekar.html" class="story-card p-8 rounded-lg flex flex-col h-full no-underline">
+<span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Novela / Mrak / Limb</span>
+<h3 class="text-2xl font-bold text-white mb-4">Bibliotekar i katalog sopstva</h3>
+<p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Brojao sam stvari da ne bih morao da brojim sebe. Bibliotekar koji zna tačno koliko koraka ima od ulaza do stola — i jednu knjigu bez naslova koja zna njegovo ime pre nego što je otvori.</p>
+<span class="text-white text-xs font-bold uppercase tracking-widest">8 poglavlja · Pročitaj →</span>
+</a>
+
+<a href="mrtve-zvezde.html" class="story-card p-8 rounded-lg flex flex-col h-full no-underline">
+<span class="text-xs text-gray-500 mb-2 uppercase tracking-widest">Noir / Mrak / Istraga</span>
+<h3 class="text-2xl font-bold text-white mb-4">Mrtve Zvezde</h3>
+<p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Svetlost putuje skoro trista hiljada kilometara u sekundi. Ali ova crvena svetlost ne može da dobaci ni do mog stola. Inspektor, zupčanik 44-B, i grad koji melje kosti.</p>
+<span class="text-white text-xs font-bold uppercase tracking-widest">6 poglavlja · Pročitaj →</span>
+</a>
+
+</div>
+</section>
+
+<footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs tracking-widest uppercase">
+&copy; 2026 SVETILIŠTE | Red iznad haosa.
+</footer>
+
+<!-- Plejer — ova jedna linija ga ubacuje. Ne diraj. -->
+<script src="player.js"></script>
+</body>
+</html>
