@@ -17,10 +17,15 @@
    ========================================================= */
 
 const playlista = [
-  { naslov: "Creedence",          fajl: "creedence.mp3?v=3" },
-  { naslov: "Sound of Silence",   fajl: "sound-of-silence.mp3" },
-  { naslov: "Fake Plastic Trees", fajl: "Radiohead_-_Fake_Plastic_Trees.mp3" },
-  { naslov: "How to Save a Life", fajl: "The_Fray_-_How_To_Save_A_Life__Official_Video_.mp3" }
+  { naslov: "Creedence",            fajl: "creedence.mp3?v=3" },
+  { naslov: "Sound of Silence",     fajl: "sound-of-silence.mp3" },
+  { naslov: "Fake Plastic Trees",   fajl: "Radiohead_-_Fake_Plastic_Trees.mp3" },
+  { naslov: "How to Save a Life",   fajl: "The_Fray_-_How_To_Save_A_Life__Official_Video_.mp3" },
+  { naslov: "House of the Rising Sun", fajl: "house-of-the-rising-sun.mp3" },
+  { naslov: "Into My Arms",         fajl: "into-my-arms.mp3" },
+  { naslov: "Roads",                fajl: "portishead-roads.mp3" },
+  { naslov: "Tom Traubert's Blues", fajl: "tom-traubert.mp3" },
+  { naslov: "Hurt",                 fajl: "johnny-cash-hurt.mp3" }
 ];
 
 /* ---------- ispod ovoga ne treba ništa da diraš ---------- */
