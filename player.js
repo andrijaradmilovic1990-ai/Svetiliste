@@ -25,7 +25,8 @@ const playlista = [
   { naslov: "Into My Arms",         fajl: "into-my-arms.mp3" },
   { naslov: "Roads",                fajl: "portishead-roads.mp3" },
   { naslov: "Tom Traubert's Blues", fajl: "tom-traubert.mp3" },
-  { naslov: "Hurt",                 fajl: "johnny-cash-hurt.mp3" }
+  { naslov: "Hurt",                 fajl: "johnny-cash-hurt.mp3" },
+  { naslov: "Wish You Were Here",   fajl: "pink_floyd_wish_you_were_here.mp3" }
 ];
 
 /* ---------- ispod ovoga ne treba ništa da diraš ---------- */
