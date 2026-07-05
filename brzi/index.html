@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f1a">
+<title>Brzi unos</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0f0f1a;--surface:#1a1a2e;--surface2:#242440;--accent:#6c63ff;
+--accent2:#ff6b9d;--text:#e8e8f0;--text2:#9898b8;--border:#2e2e50;
+--green:#4ade80;--red:#f87171;
+--radius:12px;--radius-sm:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;padding:1.25rem;padding-top:max(1.25rem,env(safe-area-inset-top));padding-bottom:max(1.25rem,env(safe-area-inset-bottom))}
+h1{font-size:20px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:1.5rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;color:var(--text);font-size:17px}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+#amount{font-size:28px;font-weight:700;text-align:center}
+.btn-save{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius);padding:1rem;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:.5rem}
+.btn-save:active{transform:scale(.98)}
+.status{text-align:center;font-size:13px;margin-top:1rem;min-height:20px}
+.status.ok{color:var(--green)}
+.status.err{color:var(--red)}
+.sync-row{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:11px;color:var(--text2);margin-bottom:1rem}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text2)}
+.sync-dot.online{background:var(--green)}
+.sync-dot.offline{background:var(--red)}
+.auth-gate{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.auth-box{text-align:center;max-width:320px;width:100%}
+.auth-title{font-size:20px;font-weight:700;margin-bottom:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-btn{width:100%;border:none;border-radius:var(--radius);padding:.9rem;font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.auth-error{color:var(--red);font-size:12px;margin-top:.8rem}
+.spacer{flex:1}
+</style>
+</head>
+<body>
+
+<div id="auth-gate" class="auth-gate">
+<div class="auth-box">
+<div class="auth-title">⚡ Brzi unos</div>
+<button class="auth-btn" id="btn-google">Prijavi se Google nalogom</button>
+<div class="auth-error" id="auth-error"></div>
+</div>
+</div>
+
+<h1>⚡ Brzi unos</h1>
+<div class="sync-row"><div class="sync-dot" id="sync-dot"></div><span id="sync-label">povezivanje...</span></div>
+
+<div class="form-group">
+<label>Iznos (RSD)</label>
+<input type="number" id="amount" placeholder="0" inputmode="decimal" autofocus>
+</div>
+<div class="form-group">
+<label>Kategorija</label>
+<select id="cat"></select>
+</div>
+<div class="form-group">
+<label>Opis</label>
+<input type="text" id="desc" placeholder="npr. Lidl, benzin...">
+</div>
+<div class="form-group">
+<label>Datum</label>
+<input type="date" id="date">
+</div>
+<button class="btn-save" id="btn-save">Sačuvaj transakciju</button>
+<div class="status" id="status"></div>
+<div class="spacer"></div>
+
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {getDatabase,ref,set} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const firebaseConfig = {
+apiKey:"AIzaSyDI03DXl54GvRv99Ywb0-53rI1dhsYM18c",
+authDomain:"budzet-f3992.firebaseapp.com",
+projectId:"budzet-f3992",
+databaseURL:"https://budzet-f3992-default-rtdb.europe-west1.firebasedatabase.app",
+storageBucket:"budzet-f3992.firebasestorage.app",
+messagingSenderId:"633902520397",
+appId:"1:633902520397:web:1488ffe3d9626a8c586404"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+const SECTIONS = [
+{id:'nedelja1',label:'Nedelja 1'},{id:'nedelja2',label:'Nedelja 2'},
+{id:'nedelja3',label:'Nedelja 3'},{id:'nedelja4',label:'Nedelja 4'},
+{id:'dodatne',label:'Dodatne stvari'},{id:'nepredvidjeni',label:'Nepredviđeni troškovi'},
+{id:'racuni',label:'Računi'},
+];
+
+// Popuni select
+const sel=document.getElementById('cat');
+sel.innerHTML=SECTIONS.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+
+// Default datum: danas
+const dateInput=document.getElementById('date');
+function todayStr(){
+const d=new Date();
+return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+dateInput.value=todayStr();
+
+function setSyncDot(online){
+const d=document.getElementById('sync-dot');
+const l=document.getElementById('sync-label');
+d.className='sync-dot '+(online?'online':'offline');
+l.textContent=online?'povezano':'nije povezano';
+}
+setSyncDot(true);
+
+function showStatus(msg,ok){
+const s=document.getElementById('status');
+s.textContent=msg;
+s.className='status '+(ok?'ok':'err');
+setTimeout(()=>{s.textContent='';s.className='status'},2500);
+}
+
+document.getElementById('btn-save').onclick=function(){
+const amount=parseFloat(document.getElementById('amount').value)||0;
+if(!amount){showStatus('Unesi iznos',false);return}
+const cat=document.getElementById('cat').value;
+const desc=document.getElementById('desc').value.trim();
+const dateVal=document.getElementById('date').value || todayStr();
+const now=new Date();
+const [yy,mm,dd]=dateVal.split('-').map(Number);
+const ts=new Date(yy,mm-1,dd,now.getHours(),now.getMinutes(),now.getSeconds(),now.getMilliseconds()).getTime();
+const godina=yy, mesec=mm-1;
+set(ref(db,`budzet/${godina}/${mesec}/transactions/${ts}`),{amount,cat,desc,ts})
+.then(()=>{
+showStatus('Sačuvano ✓',true);
+document.getElementById('amount').value='';
+document.getElementById('desc').value='';
+document.getElementById('amount').focus();
+})
+.catch(e=>showStatus('Greška: '+e.message,false));
+};
+
+// ---- AUTH (isti Google nalog kao Budzet app) ----
+function hideGate(){document.getElementById('auth-gate').style.display='none'}
+function authError(m){document.getElementById('auth-error').textContent=m||''}
+function prettyAuthErr(e){
+const c=(e&&e.code)||'';
+if(c==='auth/unauthorized-domain')return 'Ovaj domen nije dozvoljen u Firebase-u.';
+if(c==='auth/popup-blocked')return 'Pregledač je blokirao prozor za prijavu.';
+if(c==='auth/network-request-failed')return 'Nema internet konekcije.';
+return (e&&e.message)||'Greška pri prijavi.';
+}
+document.getElementById('btn-google').onclick=async function(){
+authError('');
+try{
+await signInWithPopup(auth,googleProvider);
+}catch(e){
+const c=(e&&e.code)||'';
+if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){
+try{await signInWithRedirect(auth,googleProvider)}catch(e2){authError(prettyAuthErr(e2))}
+}else if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request'){
+}else{authError(prettyAuthErr(e))}
+}
+};
+
+setPersistence(auth,browserLocalPersistence).catch(function(){});
+getRedirectResult(auth).catch(function(e){authError(prettyAuthErr(e))});
+onAuthStateChanged(auth,function(user){
+if(!user){
+document.getElementById('auth-gate').style.display='flex';
+}else{
+hideGate();
+}
+});
+
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('/Svetiliste/brzi/sw.js');
+}
+</script>
+</body>
+</html>
