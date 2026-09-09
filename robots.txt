@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://andrijaradmilovic1990-ai.github.io/Svetiliste/sitemap.xml
